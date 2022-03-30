@@ -19,7 +19,16 @@ const theme = createTheme({
     h2: {
       'fontSize': '1.5rem',
     }
-  }
+  },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          textTransform: 'unset',
+        },
+      },
+    },
+  },
 });
 
 function App() {

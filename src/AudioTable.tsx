@@ -3,7 +3,7 @@ import React from 'react';
 import TagColumn from './TagColumn';
 class AudioTable extends React.Component {
     render() {
-        const jsonData = [{"tagName":"anan","values":[1,2,3,4]},{"tagName":"baban","values":[5,6,7,8]},{"tagName":"caca","values":[9,10,11,12]},{"tagName":"pepe","values":[13,14,15,16]}];
+        const jsonData = [{"tagName":"tag 1","values":["Lorem", "ipsum", "dolor", "sit"]},{"tagName":"tag 2","values":["amet", "consectetur", "adipiscing"]},{"tagName":"tag three","values":["elit", "Pellentesque", "maximus", "ex enim", "quis"]},{"tagName":"tag four","values":["fermentum", "mauris", "eleifend ut"]}];
         return (
             <Stack direction="row" justifyContent='center' spacing={2}>
                 {jsonData.map((tagCollection) => {
