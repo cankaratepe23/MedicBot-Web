@@ -1,6 +1,5 @@
+import { ButtonGroup, Button, Typography, Stack } from '@mui/material';
 import React from 'react';
-import './TagColumn.css';
-
 
 interface ITagColumnProps {
     tagCollection: {tagName: any, values: number[]};
@@ -9,14 +8,16 @@ interface ITagColumnProps {
 class TagColumn extends React.Component<ITagColumnProps> {
     render() {
         return (
-            <div className="TagColumn">
-                <h2 className="TagColumn-header">{this.props.tagCollection.tagName}</h2>
+            <Stack>
+                <Typography variant='h2'>{this.props.tagCollection.tagName}</Typography>
+                <ButtonGroup orientation='vertical' variant='text'>
                 {this.props.tagCollection.values.map(value => {
                     return (
-                        <button>{value}</button>
+                        <Button key={value}>{value}</Button>
                     );
                 })}
-            </div>
+                </ButtonGroup>
+            </Stack>
         )
     }
 }

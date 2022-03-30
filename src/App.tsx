@@ -1,17 +1,34 @@
+import { createTheme, CssBaseline, Stack, ThemeProvider, Typography } from '@mui/material';
 import React from 'react';
-import './App.css';
 import AudioTable from './AudioTable';
+
+const theme = createTheme({
+  palette: {
+    mode: 'dark',
+    text: {
+      primary: '#EEE',
+    }
+  },
+  typography: {
+    'fontFamily': "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen','Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',sans-serif",
+    h1: {
+      'fontSize': '3rem',
+    },
+    h2: {
+      'fontSize': '1.5rem',
+    }
+  }
+});
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1 className="App-title">MedicBot Entries List</h1>
-      </header>
-      <div className="App-body">
-        <AudioTable/>
-      </div>
-    </div>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Stack justifyContent='center' spacing={2} p={2}>
+        <Typography variant='h1' align='center'>MedicBot Entries List</Typography>
+        <AudioTable />
+      </Stack>
+    </ThemeProvider>
   );
 }
 

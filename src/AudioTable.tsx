@@ -1,18 +1,17 @@
+import { Stack } from '@mui/material';
 import React from 'react';
-import './AudioTable.css';
 import TagColumn from './TagColumn';
-
 class AudioTable extends React.Component {
-    readonly jsonData = [{"tagName":"anan","values":[1,2,3,4]},{"tagName":"baban","values":[5,6,7,8]},{"tagName":"caca","values":[9,10,11,12]},{"tagName":"pepe","values":[13,14,15,16]}];
     render() {
+        const jsonData = [{"tagName":"anan","values":[1,2,3,4]},{"tagName":"baban","values":[5,6,7,8]},{"tagName":"caca","values":[9,10,11,12]},{"tagName":"pepe","values":[13,14,15,16]}];
         return (
-            <div className="AudioTable">
-                {this.jsonData.map((tagCollection) => {
+            <Stack direction="row" justifyContent='center' spacing={2}>
+                {jsonData.map((tagCollection) => {
                     return (
-                        <TagColumn tagCollection={tagCollection}/>
+                        <TagColumn key={tagCollection.tagName} tagCollection={tagCollection}/>
                     );
                 })}
-            </div>
+            </Stack>
         )
     }
 
