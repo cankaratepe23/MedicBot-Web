@@ -1,4 +1,4 @@
-import { ButtonGroup, Button, Typography, Stack } from '@mui/material';
+import { ButtonGroup, Button, Typography, Stack, Box } from '@mui/material';
 import React from 'react';
 
 interface ITagColumnProps {
@@ -9,7 +9,9 @@ class TagColumn extends React.Component<ITagColumnProps> {
     render() {
         return (
             <Stack>
-                <Typography variant='h2'>{this.props.tagCollection.tagName}</Typography>
+                <Box p={1} sx={{bgcolor: 'primary.main', verticalAlign: 'center'}}>
+                    <Typography variant='h2'>{this.props.tagCollection.tagName}</Typography>
+                </Box>
                 <ButtonGroup orientation='vertical' variant='text'>
                 {this.props.tagCollection.values.map(value => {
                     return (

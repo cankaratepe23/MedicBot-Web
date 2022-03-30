@@ -1,10 +1,12 @@
 import { createTheme, CssBaseline, Stack, ThemeProvider, Typography } from '@mui/material';
+import { lightBlue } from '@mui/material/colors';
 import React from 'react';
 import AudioTable from './AudioTable';
 
 const theme = createTheme({
   palette: {
     mode: 'dark',
+    primary: lightBlue,
     text: {
       primary: '#EEE',
     }
