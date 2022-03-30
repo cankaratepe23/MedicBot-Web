@@ -1,12 +1,16 @@
 import { createTheme, CssBaseline, Stack, ThemeProvider, Typography } from '@mui/material';
-import { lightBlue } from '@mui/material/colors';
+import { lightBlue, deepPurple } from '@mui/material/colors';
 import React from 'react';
 import AudioTable from './AudioTable';
 
 const theme = createTheme({
   palette: {
     mode: 'dark',
-    primary: lightBlue,
+    primary: {
+      main: lightBlue[500],
+      light: lightBlue[100],
+      dark: deepPurple[900],
+    },
     text: {
       primary: '#EEE',
     }
@@ -24,7 +28,9 @@ const theme = createTheme({
     MuiButton: {
       styleOverrides: {
         root: {
+          color: '#EEE',
           textTransform: 'unset',
+          borderRadius: 0,
         },
       },
     },
