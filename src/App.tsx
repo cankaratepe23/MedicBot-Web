@@ -7,9 +7,9 @@ const theme = createTheme({
   palette: {
     mode: 'dark',
     primary: {
-      main: lightBlue[500],
+      main: deepPurple[900],
       light: lightBlue[100],
-      dark: deepPurple[900],
+      dark: lightBlue[900],
     },
     text: {
       primary: '#EEE',
