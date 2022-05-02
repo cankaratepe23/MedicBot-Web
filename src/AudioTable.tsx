@@ -1,4 +1,4 @@
-import { Stack } from '@mui/material';
+import { Masonry } from '@mui/lab';
 import axios from 'axios';
 import React from 'react';
 import { IAudioTrack } from './Interfaces';
@@ -37,7 +37,7 @@ class AudioTable extends React.Component<{}, { trackData: { [tagName: string]: I
 
     render() {
         return (
-            <Stack direction="row" justifyContent='center' spacing={2}>
+            <Masonry sx={{ padding: 2 }} columns={5} spacing={2.5}>
                 {
                     Object.keys(this.state.trackData).map((tagName) => {
                         return (
@@ -45,7 +45,7 @@ class AudioTable extends React.Component<{}, { trackData: { [tagName: string]: I
                         );
                     })
                 }
-            </Stack>
+            </Masonry>
         )
     }
 

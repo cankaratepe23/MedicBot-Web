@@ -11,7 +11,7 @@ class TagColumn extends React.Component<ITagColumnProps> {
     render() {
         console.log(this.props.tagName);
         return (
-            <Stack>
+            <Stack width={250}>
                 <Box p={1} sx={{ bgcolor: 'primary.main', verticalAlign: 'center', textAlign: 'center' }}>
                     <Typography variant='h2'>{this.props.tagName}</Typography>
                 </Box>

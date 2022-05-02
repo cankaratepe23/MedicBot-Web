@@ -1,5 +1,5 @@
 import { createTheme, CssBaseline, Stack, ThemeProvider, Typography } from '@mui/material';
-import { lightBlue, deepPurple } from '@mui/material/colors';
+import { grey } from '@mui/material/colors';
 import React from 'react';
 import AudioTable from './AudioTable';
 
@@ -7,9 +7,9 @@ const theme = createTheme({
   palette: {
     mode: 'dark',
     primary: {
-      main: deepPurple[900],
-      light: lightBlue[100],
-      dark: lightBlue[900],
+      main: grey[900],
+      light: grey[100],
+      dark: grey[800],
     },
     text: {
       primary: '#EEE',
@@ -21,7 +21,8 @@ const theme = createTheme({
       'fontSize': '3rem',
     },
     h2: {
-      'fontSize': '1.5rem',
+      'fontSize': '1.75rem',
+      'fontWeight': 400
     }
   },
   components: {
@@ -31,6 +32,8 @@ const theme = createTheme({
           color: '#EEE',
           textTransform: 'unset',
           borderRadius: 0,
+          fontSize: '1rem',
+          fontWeight: 200
         },
       },
     },
