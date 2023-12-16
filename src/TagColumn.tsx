@@ -1,8 +1,24 @@
 import { ButtonGroup, Button, Typography, Stack, Box } from '@mui/material';
-import React from 'react';
 import { IAudioTrack } from './Interfaces';
+import { apiUrl } from './Properties';
 
-export default function TagColumn({tagName, tracks}: {tagName: string, tracks: IAudioTrack[]}) {
+
+
+export default function TagColumn({ tagName, tracks }: { tagName: string, tracks: IAudioTrack[] }) {
+    async function handleClick(trackId: string) {
+        const url = apiUrl + 'Audio/Play/463052720509812736?' + new URLSearchParams({
+            audioNameOrId: trackId,
+            searchById: "true"
+        });
+
+        fetch(url).then(response => {
+            if (response.status == 401) {
+                window.location.replace(apiUrl + "Auth/TestLogin");
+            }
+        });
+    }
+
+
     return (
         <Stack width={250}>
             <Box p={1} sx={{ bgcolor: 'primary.main', verticalAlign: 'center', textAlign: 'center' }}>
@@ -11,7 +27,7 @@ export default function TagColumn({tagName, tracks}: {tagName: string, tracks: I
             <ButtonGroup orientation='vertical' variant='text'>
                 {tracks.map(track => {
                     return (
-                        <Button sx={{ bgcolor: 'primary.dark' }} key={track.id}>{track.name}</Button>
+                        <Button sx={{ bgcolor: 'primary.dark' }} key={track.id} onClick={() => handleClick(track.id)}>{track.name}</Button>
                     );
                 })}
             </ButtonGroup>

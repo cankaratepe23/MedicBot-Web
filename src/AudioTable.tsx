@@ -9,7 +9,7 @@ export default function AudioTable() {
 
     useEffect(() => {
         const fetchData = async () => {
-            const response = await fetch(apiUrl + 'Audio/Get');
+            const response = await fetch(apiUrl + 'Audio');
             const jsonData: IAudioTrack[] = await response.json();
             const grouped: { [tagName: string]: IAudioTrack[] } = {};
             jsonData.forEach((track) => {
