@@ -28,7 +28,7 @@ class AudioTable extends React.Component<{}, { trackData: { [tagName: string]: I
                     grouped[key].push(track);
                 }
                 else {
-                    grouped[key] = [];
+                    grouped[key] = [ track ];
                 }
             });
             this.setState({ trackData: grouped })
@@ -36,12 +36,13 @@ class AudioTable extends React.Component<{}, { trackData: { [tagName: string]: I
     }
 
     render() {
+        console.log(Object.keys(this.state.trackData));
         return (
             <Masonry sx={{ padding: 2 }} columns={5} spacing={2.5}>
                 {
-                    Object.keys(this.state.trackData).map((tagName) => {
+                    Object.keys(this.state.trackData).sort().map((tagName) => {
                         return (
-                            <TagColumn key={tagName} tagName={tagName} tracks={this.state.trackData[tagName]} />
+                            <TagColumn key={tagName} tagName={tagName} tracks={this.state.trackData[tagName].sort()} />
                         );
                     })
                 }
