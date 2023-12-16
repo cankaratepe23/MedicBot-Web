@@ -1,20 +1,16 @@
 import { Masonry } from '@mui/lab';
-import axios from 'axios';
-import React from 'react';
+import { useState, useEffect } from 'react';
 import { IAudioTrack } from './Interfaces';
 import { apiUrl } from './Properties';
 import TagColumn from './TagColumn';
-class AudioTable extends React.Component<{}, { trackData: { [tagName: string]: IAudioTrack[] }}> {
-    constructor(props: any) {
-        super(props);
-        this.state = {
-            trackData: {}
-        };
-    }
 
-    componentDidMount() {
-        axios.get(apiUrl + 'Audio/Get').then((response) => {
-            const jsonData: IAudioTrack[] = response.data;
+export default function AudioTable() {
+    const [trackData, setTrackData] = useState<{ [tagName: string]: IAudioTrack[] }>({});
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const response = await fetch(apiUrl + 'Audio/Get');
+            const jsonData: IAudioTrack[] = await response.json();
             const grouped: { [tagName: string]: IAudioTrack[] } = {};
             jsonData.forEach((track) => {
                 let key;
@@ -28,28 +24,23 @@ class AudioTable extends React.Component<{}, { trackData: { [tagName: string]: I
                     grouped[key].push(track);
                 }
                 else {
-                    grouped[key] = [ track ];
+                    grouped[key] = [track];
                 }
             });
-            this.setState({ trackData: grouped })
-        })
-    }
+            setTrackData(grouped);
+        }
+        fetchData();
+    }, []);
 
-    render() {
-        console.log(Object.keys(this.state.trackData));
-        return (
-            <Masonry sx={{ padding: 2 }} columns={5} spacing={2.5}>
-                {
-                    Object.keys(this.state.trackData).sort().map((tagName) => {
-                        return (
-                            <TagColumn key={tagName} tagName={tagName} tracks={this.state.trackData[tagName].sort()} />
-                        );
-                    })
-                }
-            </Masonry>
-        )
-    }
-
+    return (
+        <Masonry sx={{ padding: 2 }} columns={5} spacing={2.5}>
+            {
+                Object.keys(trackData).sort().map((tagName) => {
+                    return (
+                        <TagColumn key={tagName} tagName={tagName} tracks={trackData[tagName].sort()} />
+                    );
+                })
+            }
+        </Masonry>
+    );
 }
-
-export default AudioTable;
