@@ -1,1 +1,1 @@
-export const apiUrl = "https://comaristan.cf:4000/"
+export const apiUrl = "https://api.medicbot.comaristan.cf/"
