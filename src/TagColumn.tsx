@@ -11,7 +11,7 @@ export default function TagColumn({ tagName, tracks }: { tagName: string, tracks
             searchById: "true"
         });
 
-        fetch(url).then(response => {
+        fetch(url, {credentials: 'include'}).then(response => {
             if (response.status == 401) {
                 window.location.replace(apiUrl + "Auth/TestLogin");
             }
