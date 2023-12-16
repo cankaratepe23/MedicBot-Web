@@ -1,1 +1,1 @@
-export const apiUrl = "https://localhost:3333/"
+export const apiUrl = "https://comaristan.cf:4000/"
