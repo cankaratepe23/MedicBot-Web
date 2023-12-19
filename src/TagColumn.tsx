@@ -18,6 +18,24 @@ export default function TagColumn({ tagName, tracks }: { tagName: string, tracks
         });
     }
 
+    async function playAudioInBrowser(trackId: string) {
+        const url = apiUrl + 'Audio/' + trackId;
+
+        fetch(url, {credentials: 'include'}).then(response => {
+            if (response.status == 401) {
+                window.location.replace(apiUrl + "Auth/TestLogin");
+            }
+            else {
+                response.blob().then(blob => {
+                    const blobUrl = window.URL.createObjectURL(blob);
+                    const audio = new Audio(blobUrl)
+                    console.log(blobUrl);
+                    audio.play();
+                })
+            }
+        });
+    }
+
 
     return (
         <Stack width={250}>
