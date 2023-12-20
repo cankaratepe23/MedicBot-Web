@@ -63,7 +63,7 @@ function App() {
 
     fetch(url, { credentials: 'include' }).then(response => {
       if (response.status == 401) {
-        window.location.replace(apiUrl + "Auth/TestLogin");
+        window.location.href = (apiUrl + "Auth/TestLogin");
       }
     });
   }
@@ -73,7 +73,7 @@ function App() {
 
     fetch(url, { credentials: 'include' }).then(response => {
       if (response.status == 401) {
-        window.location.replace(apiUrl + "Auth/TestLogin");
+        window.location.href = (apiUrl + "Auth/TestLogin");
       }
       else {
         response.blob().then(blob => {
