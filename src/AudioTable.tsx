@@ -4,7 +4,7 @@ import { IAudioTrack } from './Interfaces';
 import { apiUrl } from './Properties';
 import TagColumn from './TagColumn';
 
-export default function AudioTable() {
+export default function AudioTable({clickCallback}: {clickCallback: (trackId: string) => Promise<void>}) {
     const [trackData, setTrackData] = useState<{ [tagName: string]: IAudioTrack[] }>({});
     const [untaggedTrackData, setUntaggedTrackData] = useState<IAudioTrack[]>([]);
     const [loadComplete, setLoadComplete] = useState(false);
@@ -53,12 +53,12 @@ export default function AudioTable() {
             {
                 splitArrayIntoChunks(untaggedTrackData, 5).map((chunk: IAudioTrack[], i: number) => {
                     return (
-                        <TagColumn key={'!no_tag' + i} tagName='' tracks={chunk} />
+                        <TagColumn key={'!no_tag' + i} tagName='' tracks={chunk} clickCallback={clickCallback} />
                     )
                 }).concat(
                 Object.keys(trackData).filter((t) => t != '!no_tag').sort().map((tagName) => {
                     return (
-                        <TagColumn key={tagName} tagName={tagName} tracks={trackData[tagName]} />
+                        <TagColumn key={tagName} tagName={tagName} tracks={trackData[tagName]} clickCallback={clickCallback}/>
                     );
                 }))
             }

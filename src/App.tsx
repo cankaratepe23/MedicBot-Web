@@ -1,10 +1,10 @@
-import { createTheme, CssBaseline, Stack, ThemeProvider, Typography } from '@mui/material';
+import { createTheme, CssBaseline, Stack, Switch, TextField, ThemeProvider, ToggleButton, Typography } from '@mui/material';
 import { grey } from '@mui/material/colors';
 import AudioTable from './AudioTable';
-import img11 from './img/11-0-Big-Sur-Color-Night.webp';
-import img12 from './img/12-Dark.webp';
 import img13 from './img/13-Ventura-Dark.webp';
-import img14 from './img/14-Sonoma-Dark.webp';
+import { useEffect, useState } from 'react';
+import { apiUrl } from './Properties';
+
 
 const theme = createTheme({
   palette: {
@@ -44,17 +44,70 @@ const theme = createTheme({
 });
 
 function App() {
-  const backgrounds = [img11, img12, img13, img14];
-  const bg = backgrounds[Math.floor(Math.random()*backgrounds.length)];
+  const [soundboardMode, setSoundboardMode] = useState(false);
+
+  async function handleClick(trackId: string) {
+    if (soundboardMode) {
+      playAudioInBrowser(trackId);
+    }
+    else {
+      playInBot(trackId);
+    }
+  }
+
+  async function playInBot(trackId: string) {
+    const url = apiUrl + 'Audio/Play/463052720509812736?' + new URLSearchParams({
+      audioNameOrId: trackId,
+      searchById: "true"
+    });
+
+    fetch(url, { credentials: 'include' }).then(response => {
+      if (response.status == 401) {
+        window.location.replace(apiUrl + "Auth/TestLogin");
+      }
+    });
+  }
+
+  async function playAudioInBrowser(trackId: string) {
+    const url = apiUrl + 'Audio/' + trackId;
+
+    fetch(url, { credentials: 'include' }).then(response => {
+      if (response.status == 401) {
+        window.location.replace(apiUrl + "Auth/TestLogin");
+      }
+      else {
+        response.blob().then(blob => {
+          const blobUrl = window.URL.createObjectURL(blob);
+          const audio = new Audio(blobUrl)
+          console.log(blobUrl);
+          audio.play();
+        })
+      }
+    });
+  }
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Stack justifyContent='center' spacing={2} p={2} sx={{
-        backgroundImage: `url(${bg})`,
-        backgroundSize: 'contain'
+        backgroundImage: `url(${img13})`,
+        backgroundSize: 'contain',
       }}>
-        <Typography variant='h1' align='center'>MedicBot Entries List</Typography>
-        <AudioTable />
+        <Stack direction={'row'} spacing={5}>
+          <Typography variant='h1' align='left'>MedicBot Entries List</Typography>
+          <TextField id='search-box' label='Search for an audio track...' variant='outlined' sx={{ width: 3 / 5, pt: 1 / 4 }} />
+          <ToggleButton
+            value="check"
+            selected={soundboardMode}
+            onChange={() => {
+              setSoundboardMode(!soundboardMode);
+            }}
+            color='warning'
+            >
+            Soundboard Mode
+          </ToggleButton>
+        </Stack>
+        <AudioTable clickCallback={handleClick} />
       </Stack>
     </ThemeProvider>
   );
