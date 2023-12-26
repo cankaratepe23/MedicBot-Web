@@ -49,7 +49,7 @@ export default function AudioTable({clickCallback}: {clickCallback: (trackId: st
     }
 
     return (
-        <Masonry sx={{ opacity: loadComplete ? 1 : 0, transition: 'ease-in-out .2s' }} columns={5} spacing={2.5}>
+        <Masonry sx={{ opacity: loadComplete ? 1 : 0, transition: 'ease-in-out .2s' }} columns={{ xs: 3, sm: 5 }} spacing={2.5}>
             {
                 splitArrayIntoChunks(untaggedTrackData, 5).map((chunk: IAudioTrack[], i: number) => {
                     return (
