@@ -107,11 +107,11 @@ function App() {
         backgroundImage: `url(${img13})`,
         backgroundSize: 'contain',
       }}>
-        <Grid container spacing={{ xs: 2, md: 3 }} pt={4} px={4}>
-          <Grid xs={12} md={3} mb={2} key='headergrid1'>
+        <Grid container spacing={{ xs: 1, md: 3 }}>
+          <Grid xs={12} md={3} key='headergrid1'>
             <Typography variant='h1' align='left'>MedicBot Entries List</Typography>
           </Grid>
-          <Grid xs={12} md={8} mb={2} key='headergrid2' pr={4}>
+          <Grid xs={12} md={8} key='headergrid2' pr={4}>
             <TextField id='search-box' label='Search for an audio track...' variant='outlined' fullWidth onChange={e => { setSerachQuery(e.target.value) }} />
           </Grid>
           <Grid xs={12} md={1} key='headergrid3'>
