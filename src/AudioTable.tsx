@@ -1,10 +1,10 @@
 import { Masonry } from '@mui/lab';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, memo } from 'react';
 import { IAudioTrack } from './Interfaces';
 import { apiUrl } from './Properties';
 import TagColumn from './TagColumn';
 
-export default function AudioTable({clickCallback}: {clickCallback: (trackId: string) => Promise<void>}) {
+const AudioTable = memo(function AudioTable({clickCallback}: {clickCallback: (trackId: string) => Promise<void>}) {
     const [trackData, setTrackData] = useState<{ [tagName: string]: IAudioTrack[] }>({});
     const [untaggedTrackData, setUntaggedTrackData] = useState<IAudioTrack[]>([]);
     const [loadComplete, setLoadComplete] = useState(false);
@@ -64,4 +64,6 @@ export default function AudioTable({clickCallback}: {clickCallback: (trackId: st
             }
         </Masonry>
     );
-}
+})
+
+export default AudioTable;

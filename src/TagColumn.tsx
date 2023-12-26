@@ -1,10 +1,10 @@
 import { ButtonGroup, Button, Typography, Stack, Box } from '@mui/material';
 import { IAudioTrack } from './Interfaces';
+import { memo } from 'react';
 
 
 
-export default function TagColumn({ tagName, tracks, clickCallback }: { tagName: string, tracks: IAudioTrack[], clickCallback: (trackId: string) => Promise<void> }) {
-    
+const TagColumn  = memo(function TagColumn({ tagName, tracks, clickCallback }: { tagName: string, tracks: IAudioTrack[], clickCallback: (trackId: string) => Promise<void> }) {
     return (
         <Stack width={250}>
             <Box p={1} sx={{ bgcolor: 'primary.main', verticalAlign: 'center', textAlign: 'center' }}>
@@ -19,4 +19,6 @@ export default function TagColumn({ tagName, tracks, clickCallback }: { tagName:
             </ButtonGroup>
         </Stack>
     )
-}
+});
+
+export default TagColumn;

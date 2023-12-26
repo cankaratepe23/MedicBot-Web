@@ -3,7 +3,7 @@ import Grid from '@mui/material/Unstable_Grid2';
 import { grey } from '@mui/material/colors';
 import AudioTable from './AudioTable';
 import img13 from './img/13-Ventura-Dark.webp';
-import { useEffect, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { apiUrl } from './Properties';
 
 
@@ -55,50 +55,43 @@ const theme = createTheme({
 });
 
 function App() {
-  const [soundboardMode, setSoundboardMode] = useState(false);
+  const soundboardMode = useRef(false);
+  const [soundboardModeVisual, setSoundboardModeVisual] = useState(false);
   const [searchQuery, setSerachQuery] = useState('');
 
-  async function handleClick(trackId: string) {
-    if (soundboardMode) {
-      playAudioInBrowser(trackId);
+  const handleClick = useCallback(async (trackId: string) => {
+    if (soundboardMode.current) {
+      const url = apiUrl + 'Audio/' + trackId;
+
+      fetch(url, { credentials: 'include' }).then(response => {
+        if (response.status == 401) {
+          window.location.href = (apiUrl + "Auth/TestLogin");
+        }
+        else {
+          response.blob().then(blob => {
+            const blobUrl = window.URL.createObjectURL(blob);
+            const audio = new Audio(blobUrl)
+            console.log(blobUrl);
+            audio.play();
+          })
+        }
+      }).catch(e => {
+        console.log(e);
+      });
     }
     else {
-      playInBot(trackId);
+      const url = apiUrl + 'Audio/Play/463052720509812736?' + new URLSearchParams({
+        audioNameOrId: trackId,
+        searchById: "true"
+      });
+
+      fetch(url, { credentials: 'include' }).then(response => {
+        if (response.status == 401) {
+          window.location.href = (apiUrl + "Auth/TestLogin");
+        }
+      });
     }
-  }
-
-  async function playInBot(trackId: string) {
-    const url = apiUrl + 'Audio/Play/463052720509812736?' + new URLSearchParams({
-      audioNameOrId: trackId,
-      searchById: "true"
-    });
-
-    fetch(url, { credentials: 'include' }).then(response => {
-      if (response.status == 401) {
-        window.location.href = (apiUrl + "Auth/TestLogin");
-      }
-    });
-  }
-
-  async function playAudioInBrowser(trackId: string) {
-    const url = apiUrl + 'Audio/' + trackId;
-
-    fetch(url, { credentials: 'include' }).then(response => {
-      if (response.status == 401) {
-        window.location.href = (apiUrl + "Auth/TestLogin");
-      }
-      else {
-        response.blob().then(blob => {
-          const blobUrl = window.URL.createObjectURL(blob);
-          const audio = new Audio(blobUrl)
-          console.log(blobUrl);
-          audio.play();
-        })
-      }
-    }).catch(e => {
-      console.log(e);
-    });
-  }
+  }, []);
 
   return (
     <ThemeProvider theme={theme}>
@@ -117,9 +110,10 @@ function App() {
           <Grid xs={12} md={1} key='headergrid3'>
             <ToggleButton
               value="check"
-              selected={soundboardMode}
+              selected={soundboardModeVisual}
               onChange={() => {
-                setSoundboardMode(!soundboardMode);
+                soundboardMode.current = !soundboardMode.current;
+                setSoundboardModeVisual(!soundboardModeVisual);
               }}
               color='warning'>
               Soundboard Mode
