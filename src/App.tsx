@@ -1,4 +1,5 @@
-import { createTheme, CssBaseline, Grid, Paper, Stack, styled, Switch, TextField, ThemeProvider, ToggleButton, Typography } from '@mui/material';
+import { createTheme, CssBaseline, Stack, TextField, ThemeProvider, ToggleButton, Typography } from '@mui/material';
+import Grid from '@mui/material/Unstable_Grid2';
 import { grey } from '@mui/material/colors';
 import AudioTable from './AudioTable';
 import img13 from './img/13-Ventura-Dark.webp';
@@ -55,6 +56,7 @@ const theme = createTheme({
 
 function App() {
   const [soundboardMode, setSoundboardMode] = useState(false);
+  const [searchQuery, setSerachQuery] = useState('');
 
   async function handleClick(trackId: string) {
     if (soundboardMode) {
@@ -98,14 +100,6 @@ function App() {
     });
   }
 
-  const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-    ...theme.typography.body2,
-    padding: theme.spacing(2),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
-  }));
-
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -118,7 +112,7 @@ function App() {
             <Typography variant='h1' align='left'>MedicBot Entries List</Typography>
           </Grid>
           <Grid xs={12} md={8} mb={2} key='headergrid2' pr={4}>
-            <TextField id='search-box' label='Search for an audio track...' variant='outlined' fullWidth />
+            <TextField id='search-box' label='Search for an audio track...' variant='outlined' fullWidth onChange={e => { setSerachQuery(e.target.value) }} />
           </Grid>
           <Grid xs={12} md={1} key='headergrid3'>
             <ToggleButton
