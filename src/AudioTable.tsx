@@ -81,7 +81,7 @@ const AudioTable = memo(function AudioTable({clickCallback, query}: {clickCallba
                 }).concat(
                 Object.keys(filteredTagged).sort().map((tagName) => {
                     return (
-                        <TagColumn key={tagName} tagName={tagName} tracks={filterTrackList(filteredTagged[tagName], query)} clickCallback={clickCallback}/>
+                        <TagColumn key={tagName} tagName={tagName} tracks={filteredTagged[tagName]} clickCallback={clickCallback}/>
                     );
                 }))
             }

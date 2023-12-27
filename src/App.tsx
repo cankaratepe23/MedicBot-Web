@@ -1,9 +1,9 @@
-import { Box, createTheme, CssBaseline, Stack, TextField, ThemeProvider, ToggleButton, Typography } from '@mui/material';
+import { Box, createTheme, CssBaseline, Stack, TextField, ThemeProvider, ToggleButton, Typography, debounce } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 import { grey } from '@mui/material/colors';
 import AudioTable from './AudioTable';
 import img13 from './img/13-Ventura-Dark.webp';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { apiUrl } from './Properties';
 
 
@@ -90,6 +90,14 @@ function App() {
     }
   }, []);
 
+  const handleSearchInputChaned = useMemo(
+    () =>
+      debounce((value: string) => {
+        setSerachQuery(value)
+      }, 500),
+      []
+  );
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -104,7 +112,9 @@ function App() {
             <Typography variant='h1' align='left'>MedicBot Entries List</Typography>
           </Grid>
           <Grid xs={12} md={8} key='headergrid2' pr={4}>
-            <TextField id='search-box' label='Search for an audio track...' variant='outlined' fullWidth onChange={e => { setSerachQuery(e.target.value) }} />
+            <TextField id='search-box' label='Search for an audio track...' variant='outlined' fullWidth onChange={e => {
+                handleSearchInputChaned(e.target.value)
+              }} />
           </Grid>
           <Grid xs={12} md={1} key='headergrid3'>
             <ToggleButton
