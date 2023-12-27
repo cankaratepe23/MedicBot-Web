@@ -1,4 +1,4 @@
-import { createTheme, CssBaseline, Stack, TextField, ThemeProvider, ToggleButton, Typography } from '@mui/material';
+import { Box, createTheme, CssBaseline, Stack, TextField, ThemeProvider, ToggleButton, Typography } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 import { grey } from '@mui/material/colors';
 import AudioTable from './AudioTable';
@@ -71,12 +71,9 @@ function App() {
           response.blob().then(blob => {
             const blobUrl = window.URL.createObjectURL(blob);
             const audio = new Audio(blobUrl)
-            console.log(blobUrl);
             audio.play();
           })
         }
-      }).catch(e => {
-        console.log(e);
       });
     }
     else {
@@ -96,10 +93,12 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Stack justifyContent='center' spacing={2} p={2} sx={{
+      <Box sx={{
         backgroundImage: `url(${img13})`,
-        backgroundSize: 'contain',
+        backgroundSize: 'cover',
+        minHeight: '100vh'
       }}>
+      <Stack justifyContent='center' spacing={2} p={2}>
         <Grid container spacing={{ xs: 1, md: 3 }}>
           <Grid xs={12} md={3} key='headergrid1'>
             <Typography variant='h1' align='left'>MedicBot Entries List</Typography>
@@ -120,8 +119,9 @@ function App() {
             </ToggleButton>
           </Grid>
         </Grid>
-        <AudioTable clickCallback={handleClick} />
+        <AudioTable clickCallback={handleClick} query={searchQuery} />
       </Stack>
+      </Box>
     </ThemeProvider>
   );
 }
