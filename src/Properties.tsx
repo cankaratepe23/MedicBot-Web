@@ -1,1 +1,1 @@
-export const apiUrl = "https://api.medicbot.comaristan.cf/"
+export const apiUrl: string = import.meta.env.VITE_BOT_API_URL; // ""
