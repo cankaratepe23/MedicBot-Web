@@ -1,6 +1,7 @@
 import { ButtonGroup, Button, Typography, Stack, Box } from '@mui/material';
 import { IAudioTrack } from './Interfaces';
 import { memo } from 'react';
+import AudioButton from './AudioButton';
 
 
 
@@ -13,7 +14,7 @@ const TagColumn  = memo(function TagColumn({ tagName, tracks, clickCallback }: {
             <ButtonGroup orientation='vertical' variant='text'>
                 {tracks.map(track => {
                     return (
-                        <Button sx={{ bgcolor: 'primary.dark' }} key={track.id} onClick={() => clickCallback(track.id)}>{track.name}</Button>
+                        <AudioButton key={track.id} trackName={track.name} trackId={track.id} clickCallback={clickCallback} />
                     );
                 })}
             </ButtonGroup>
