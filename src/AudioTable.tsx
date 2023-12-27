@@ -17,7 +17,7 @@ const filterTrackList = (trackList: IAudioTrack[], query: string) => {
     if (!query) {
         return trackList;
     }
-    return trackList.filter(t => t.name.includes(query) || t.aliases.some(t => t.includes(query)));
+    return trackList.filter(t => t.name.includes(query.toLowerCase()) || t.aliases.some(t => t.includes(query.toLowerCase())));
 }
 
 const filterTrackData = (trackData: { [tagName: string]: IAudioTrack[] }, query: string) => {
