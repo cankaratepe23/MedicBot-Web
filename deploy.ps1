@@ -1,3 +1,3 @@
 npm run build;
-ssh ubuntu@comaristan.cf "sudo rm -r /var/www/medicbot-gui/*"
-scp -r .\dist\* ubuntu@comaristan.cf:/var/www/medicbot-gui/
+ssh ubuntu@comaristan.com "sudo rm -r /var/www/medicbot-gui/*"
+scp -r .\dist\* ubuntu@comaristan.com:/var/www/medicbot-gui/
