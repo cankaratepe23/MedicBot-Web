@@ -1,11 +1,11 @@
-import { Box, createTheme, CssBaseline, Stack, TextField, ThemeProvider, ToggleButton, Typography, debounce } from '@mui/material';
+import { Box, createTheme, CssBaseline, Stack, TextField, ThemeProvider, ToggleButton, Typography, debounce, Select, MenuItem, Menu, SelectChangeEvent } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 import { grey } from '@mui/material/colors';
 import AudioTable from './AudioTable';
-import img13 from './img/13-Ventura-Dark.webp';
 import { useCallback, useMemo, useRef, useState } from 'react';
-import { apiUrl } from './Properties';
+import { apiUrl, loginPath } from './Properties';
 
+import bgImg from './img/12-Dark.webp';
 
 const theme = createTheme({
   palette: {
@@ -57,6 +57,10 @@ const theme = createTheme({
 function App() {
   const soundboardMode = useRef(false);
   const [soundboardModeVisual, setSoundboardModeVisual] = useState(false);
+
+  const guildId = useRef('463052720509812736');
+  const [guildIdVisual, setGuildIdVisual] = useState('463052720509812736');
+
   const [searchQuery, setSerachQuery] = useState('');
 
   const handleClick = useCallback(async (trackId: string) => {
@@ -65,7 +69,7 @@ function App() {
 
       fetch(url, { credentials: 'include' }).then(response => {
         if (response.status == 401) {
-          window.location.href = (apiUrl + "Auth/TestLogin");
+          window.location.href = (apiUrl + loginPath);
         }
         else {
           response.blob().then(blob => {
@@ -77,14 +81,14 @@ function App() {
       });
     }
     else {
-      const url = apiUrl + 'Audio/Play/463052720509812736?' + new URLSearchParams({
+      const url = apiUrl + 'Audio/Play/' + guildId.current + '?' + new URLSearchParams({
         audioNameOrId: trackId,
         searchById: "true"
       });
 
       fetch(url, { credentials: 'include' }).then(response => {
         if (response.status == 401) {
-          window.location.href = (apiUrl + "Auth/TestLogin");
+          window.location.href = (apiUrl + loginPath);
         }
       });
     }
@@ -102,19 +106,31 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Box sx={{
-        backgroundImage: `url(${img13})`,
-        backgroundSize: 'cover',
-        minHeight: '100vh'
+        backgroundImage: `url(${bgImg})`,
+        backgroundSize: 'contain',
+        minHeight: '400vh'
       }}>
       <Stack justifyContent='center' spacing={2} p={2}>
         <Grid container spacing={{ xs: 1, md: 3 }}>
-          <Grid xs={12} md={3} key='headergrid1'>
-            <Typography variant='h1' align='left'>MedicBot Entries List</Typography>
+          <Grid xs={12} md={2.5} key='headergrid1'>
+            <Typography variant='h1' align='left'>MedicBot Entries</Typography>
           </Grid>
-          <Grid xs={12} md={8} key='headergrid2' pr={4}>
+          <Grid xs={12} md={7} key='headergrid2' pr={4}>
             <TextField id='search-box' label='Search for an audio track...' variant='outlined' fullWidth onChange={e => {
                 handleSearchInputChaned(e.target.value)
               }} />
+          </Grid>
+          <Grid xs={12} md={1} key='headergridcombobox'>
+            <Select
+              value={guildIdVisual}
+              label='Guild'
+              onChange={(e: SelectChangeEvent) => {
+                guildId.current = e.target.value;
+                setGuildIdVisual(e.target.value);
+              }}>
+              <MenuItem value={'463052720509812736'}>Çomaristan</MenuItem>
+              <MenuItem value={'843472529938841630'}>Apex</MenuItem>
+            </Select>
           </Grid>
           <Grid xs={12} md={1} key='headergrid3'>
             <ToggleButton
