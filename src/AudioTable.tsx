@@ -34,7 +34,7 @@ const filterTrackData = (trackData: { [tagName: string]: IAudioTrack[] }, query:
     return filteredTrackData;
 }
 
-const AudioTable = memo(function AudioTable({clickCallback, query}: {clickCallback: (trackId: string) => Promise<void>; query: string}) {
+const AudioTable = memo(function AudioTable({clickCallback, query}: {clickCallback: (trackId: string, isRightClick: boolean) => Promise<void>; query: string}) {
     const [trackData, setTrackData] = useState<{ [tagName: string]: IAudioTrack[] }>({});
     const [untaggedTrackData, setUntaggedTrackData] = useState<IAudioTrack[]>([]);
     const [loadComplete, setLoadComplete] = useState(false);

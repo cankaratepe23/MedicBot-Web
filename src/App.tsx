@@ -63,7 +63,24 @@ function App() {
 
   const [searchQuery, setSerachQuery] = useState('');
 
-  const handleClick = useCallback(async (trackId: string) => {
+  const handleClick = useCallback(async (trackId: string, isRightClick: boolean) => {
+    if (isRightClick) {
+      event
+      const url = apiUrl + 'Auth/TemporaryToken';
+
+      fetch(url, { credentials: 'include' }).then(async response => {
+        if (response.status == 401) {
+          window.location.href = (apiUrl + loginPath);
+        }
+        else {
+          const tempToken = await response.text();
+          navigator.clipboard.writeText(apiUrl + 'Audio/' + trackId + '?token=' + tempToken);
+        }
+      })
+
+      return;
+    }
+
     if (soundboardMode.current) {
       const url = apiUrl + 'Audio/' + trackId;
 
