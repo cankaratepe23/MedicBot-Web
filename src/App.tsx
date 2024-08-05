@@ -65,7 +65,6 @@ function App() {
 
   const handleClick = useCallback(async (trackId: string, isRightClick: boolean) => {
     if (isRightClick) {
-      event
       const url = apiUrl + 'Auth/TemporaryToken';
 
       fetch(url, { credentials: 'include' }).then(async response => {

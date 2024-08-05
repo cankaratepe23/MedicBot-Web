@@ -1,7 +1,7 @@
 import { Masonry } from '@mui/lab';
 import { useState, useEffect, memo } from 'react';
 import { IAudioTrack } from './Interfaces';
-import { apiUrl } from './Properties';
+import { apiUrl, loginPath } from './Properties';
 import TagColumn from './TagColumn';
 
 const splitArrayIntoChunks = (array: any[], n: number) => {
@@ -41,7 +41,11 @@ const AudioTable = memo(function AudioTable({clickCallback, query}: {clickCallba
 
     useEffect(() => {
         const fetchData = async () => {
-            const response = await fetch(apiUrl + 'Audio');
+            const response = await fetch(apiUrl + 'Audio', { credentials: 'include' });
+            if (response.status == 401) {
+                window.location.href = (apiUrl + loginPath);
+                return;
+            }
             const jsonData: IAudioTrack[] = await response.json();
             const grouped: { [tagName: string]: IAudioTrack[] } = {};
             const nongrouped: IAudioTrack[] = [];
