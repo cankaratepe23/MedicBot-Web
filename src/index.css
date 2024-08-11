@@ -8,3 +8,10 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+audio {
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 10%;
+  display: block;
+}

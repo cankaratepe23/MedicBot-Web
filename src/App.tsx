@@ -7,7 +7,7 @@ import { apiUrl, loginPath } from './Properties';
 
 import bgImg from './img/12-Dark.webp';
 
-const theme = createTheme({
+export const theme = createTheme({
   palette: {
     mode: 'dark',
     primary: {
@@ -124,7 +124,7 @@ function App() {
       <Box sx={{
         backgroundImage: `url(${bgImg})`,
         backgroundSize: 'contain',
-        minHeight: '400vh'
+        minHeight: '500vh'
       }}>
       <Stack justifyContent='center' spacing={2} p={2}>
         <Grid container spacing={{ xs: 1, md: 3 }}>
