@@ -73,7 +73,7 @@ function App() {
         }
         else {
           const tempToken = await response.text();
-          navigator.clipboard.writeText(apiUrl + 'Audio/' + trackId + '?token=' + tempToken);
+          navigator.clipboard.writeText(window.location.href + 'Audio/' + trackId + '?token=' + tempToken);
         }
       })
 
