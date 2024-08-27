@@ -1,9 +1,9 @@
 
 
-import { Box, Container, CssBaseline, ThemeProvider } from '@mui/material';
+import { Box, CssBaseline, ThemeProvider } from '@mui/material';
 import { theme } from "./App";
 import bgImg from './img/12-Dark.webp';
-import { LegacyRef, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { apiUrl, loginPath } from './Properties';
 
 const AudioPlayer = function AudioPlayer() {
