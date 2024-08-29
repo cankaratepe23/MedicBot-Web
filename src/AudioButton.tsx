@@ -5,9 +5,10 @@ import { useState } from "react";
 const AudioButton = function AudioButton({ track, clickCallback }: { track: IAudioTrack, clickCallback: (trackId: string, isRightClick: boolean) => Promise<void> }) {
 
     const [showFavouriteButton, setShowFavouriteButton] = useState(false);
+    const [isFavourite, setIsFavourite] = useState(false);
 
     return (
-        <Stack direction='row' sx={{ position: 'relative' }}>
+        <Stack direction='row'>
             <Button sx={{ bgcolor: 'primary.dark', width: '100%' }}
                 key={track.id}
                 onClick={() => clickCallback(track.id, false)}
@@ -22,16 +23,19 @@ const AudioButton = function AudioButton({ track, clickCallback }: { track: IAud
                     }, 1000)
                 }}>{track.name}</Button>
             <Button sx={{
-                            bgcolor: 'transparent',
-                            position: 'absolute',
-                            right: '0px',
-                            height: '100%',
-                            transition: 'ease-in-out .1s',
+                            color: isFavourite ? 'gold' : showFavouriteButton ? '#EEE' : '#666',
+                            bgcolor: 'primary.dark',
+                            transition: 'ease-in-out .2s',
+                            padding: 0,
+                            paddingBottom: 0.5,
+                            lineHeight: '1rem',
                             fontSize: '1.5rem',
-                            opacity: showFavouriteButton ? 0 : 1 }}
+                            fontWeight: 100
+                    }}
                     onMouseEnter={e => {setShowFavouriteButton(true);}}
-                    onMouseLeave={e => {setShowFavouriteButton(false);}}>
-                ☆
+                    onMouseLeave={e => {setShowFavouriteButton(false);}}
+                    onClick={e => {setIsFavourite(!isFavourite);}}>
+                {isFavourite ? '★' : '☆'}
             </Button>
         </Stack>
     );
