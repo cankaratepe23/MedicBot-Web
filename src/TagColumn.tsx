@@ -1,8 +1,7 @@
 import { ButtonGroup, Button, Typography, Stack, Box } from '@mui/material';
 import { IAudioTrack } from './Interfaces';
 import { memo } from 'react';
-
-
+import AudioButton from './AudioButton';
 
 const TagColumn = memo(function TagColumn({ tagName, tracks, clickCallback }: { tagName: string, tracks: IAudioTrack[], clickCallback: (trackId: string, isRightClick: boolean) => Promise<void> }) {
     return (
@@ -13,19 +12,7 @@ const TagColumn = memo(function TagColumn({ tagName, tracks, clickCallback }: { 
             <ButtonGroup orientation='vertical' variant='text'>
                 {tracks.map(track => {
                     return (
-                        <Button sx={{ bgcolor: 'primary.dark' }}
-                                key={track.id}
-                                onClick={() => clickCallback(track.id, false)}
-                                onContextMenu={(e) => {
-                                    e.preventDefault();
-                                    const targetButton = e.currentTarget;
-                                    clickCallback(track.id, true);
-                                    const prevName = e.currentTarget.innerHTML;
-                                    targetButton.innerHTML = "Copied URL!";
-                                    const timer = setTimeout(() => {
-                                        targetButton.innerHTML = prevName;
-                                    }, 1000)
-                                }}>{track.name}</Button>
+                        <AudioButton key={track.id} track={track} clickCallback={clickCallback} />
                     );
                 })}
             </ButtonGroup>
