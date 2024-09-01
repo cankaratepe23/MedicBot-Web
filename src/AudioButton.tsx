@@ -5,7 +5,7 @@ import { apiUrl } from "./Properties";
 
 const AudioButton = function AudioButton({ track, clickCallback }: { track: IAudioTrack, clickCallback: (trackId: string, isRightClick: boolean) => Promise<void> }) {
 
-    const [showFavouriteButton, setShowFavouriteButton] = useState(false);
+    const [favoriteButtonHover, setFavoriteButtonHover] = useState(false);
     const [isFavorite, setIsFavorite] = useState(track.isFavorite);
 
     function toggleFavorite() {
@@ -37,7 +37,7 @@ const AudioButton = function AudioButton({ track, clickCallback }: { track: IAud
                     }, 1000)
                 }}>{track.name}</Button>
             <Button sx={{
-                color: isFavorite ? 'gold' : showFavouriteButton ? '#EEE' : '#666',
+                color: isFavorite ? 'gold' : favoriteButtonHover ? '#EEE' : '#666',
                 bgcolor: 'primary.dark',
                 "&:hover": { bgcolor: 'primary.dark' },
                 transition: 'ease-in-out .2s',
@@ -48,10 +48,10 @@ const AudioButton = function AudioButton({ track, clickCallback }: { track: IAud
                 fontWeight: 100
             }}
                 fullWidth={false}
-                onMouseEnter={e => { setShowFavouriteButton(true); }}
-                onMouseLeave={e => { setShowFavouriteButton(false); }}
+                onMouseEnter={e => { setFavoriteButtonHover(true); }}
+                onMouseLeave={e => { setFavoriteButtonHover(false); }}
                 onClick={e => { toggleFavorite(); }}>
-                {isFavorite ? '★' : '☆'}
+                {favoriteButtonHover ? '☆' : isFavorite ? '★' : '☆'}
             </Button>
         </ButtonGroup>
     );
