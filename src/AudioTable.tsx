@@ -84,7 +84,6 @@ const AudioTable = memo(function AudioTable({ clickCallback, query }: { clickCal
 
     const favoritesUntagged = filteredUntagged.filter(a => a.isFavorite);
     const recentsUntagged = [];
-    console.log(favoritesUntagged.length);
     return (
         <Grid container spacing={2} columns={{ xs: 1, sm: 2 }}>
             <Grid xs={1}>
