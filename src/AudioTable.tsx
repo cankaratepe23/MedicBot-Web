@@ -41,7 +41,7 @@ const AudioTable = memo(function AudioTable({clickCallback, query}: {clickCallba
 
     useEffect(() => {
         const fetchData = async () => {
-            const response = await fetch(apiUrl + 'Audio', { credentials: 'include' });
+            const response = await fetch(apiUrl + 'Audio?enriched=true', { credentials: 'include' });
             if (response.status == 401) {
                 window.location.href = (apiUrl + loginPath);
                 return;

@@ -3,4 +3,5 @@ export interface IAudioTrack {
     name: string;
     aliases: string[];
     tags: string[];
+    isFavorite: boolean;
 }
