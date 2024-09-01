@@ -115,7 +115,7 @@ function App() {
       debounce((value: string) => {
         setSerachQuery(value)
       }, 500),
-      []
+    []
   );
 
   return (
@@ -126,43 +126,43 @@ function App() {
         backgroundSize: 'contain',
         minHeight: '500vh'
       }}>
-      <Stack justifyContent='center' spacing={2} p={2}>
-        <Grid container spacing={{ xs: 1, md: 3 }}>
-          <Grid xs={12} md={2.5} key='headergrid1'>
-            <Typography variant='h1' align='left'>MedicBot Entries</Typography>
-          </Grid>
-          <Grid xs={12} md={7} key='headergrid2' pr={4}>
-            <TextField id='search-box' label='Search for an audio track...' variant='outlined' fullWidth onChange={e => {
+        <Stack justifyContent='center' spacing={2} p={2}>
+          <Grid container spacing={{ xs: 1, md: 3 }}>
+            <Grid xs={12} md={2.5} key='headergrid1'>
+              <Typography variant='h1' align='left'>MedicBot Entries</Typography>
+            </Grid>
+            <Grid xs={12} md={7} key='headergrid2' pr={4}>
+              <TextField id='search-box' label='Search for an audio track...' variant='outlined' fullWidth onChange={e => {
                 handleSearchInputChaned(e.target.value)
               }} />
+            </Grid>
+            <Grid xs={12} md={1} key='headergridcombobox'>
+              <Select
+                value={guildIdVisual}
+                label='Guild'
+                onChange={(e: SelectChangeEvent) => {
+                  guildId.current = e.target.value;
+                  setGuildIdVisual(e.target.value);
+                }}>
+                <MenuItem value={'463052720509812736'}>Çomaristan</MenuItem>
+                <MenuItem value={'843472529938841630'}>Apex</MenuItem>
+              </Select>
+            </Grid>
+            <Grid xs={12} md={1} key='headergrid3'>
+              <ToggleButton
+                value="check"
+                selected={soundboardModeVisual}
+                onChange={() => {
+                  soundboardMode.current = !soundboardMode.current;
+                  setSoundboardModeVisual(!soundboardModeVisual);
+                }}
+                color='warning'>
+                Soundboard Mode
+              </ToggleButton>
+            </Grid>
           </Grid>
-          <Grid xs={12} md={1} key='headergridcombobox'>
-            <Select
-              value={guildIdVisual}
-              label='Guild'
-              onChange={(e: SelectChangeEvent) => {
-                guildId.current = e.target.value;
-                setGuildIdVisual(e.target.value);
-              }}>
-              <MenuItem value={'463052720509812736'}>Çomaristan</MenuItem>
-              <MenuItem value={'843472529938841630'}>Apex</MenuItem>
-            </Select>
-          </Grid>
-          <Grid xs={12} md={1} key='headergrid3'>
-            <ToggleButton
-              value="check"
-              selected={soundboardModeVisual}
-              onChange={() => {
-                soundboardMode.current = !soundboardMode.current;
-                setSoundboardModeVisual(!soundboardModeVisual);
-              }}
-              color='warning'>
-              Soundboard Mode
-            </ToggleButton>
-          </Grid>
-        </Grid>
-        <AudioTable clickCallback={handleClick} query={searchQuery} />
-      </Stack>
+          <AudioTable clickCallback={handleClick} query={searchQuery} />
+        </Stack>
       </Box>
     </ThemeProvider>
   );
