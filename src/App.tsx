@@ -41,13 +41,23 @@ export const theme = createTheme({
           borderRadius: 0,
           fontSize: '1rem',
           fontWeight: 200
-        },
+        }
       },
     },
     MuiToggleButton: {
       styleOverrides: {
         root: {
           padding: 6
+        }
+      }
+    },
+    MuiButtonGroup: {
+      styleOverrides: {
+        firstButton: {
+          border: 'none'
+        },
+        lastButton: {
+          border: 'none'
         }
       }
     }

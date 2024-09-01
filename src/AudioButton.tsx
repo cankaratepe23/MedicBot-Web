@@ -1,4 +1,4 @@
-import { Stack, Button } from "@mui/material";
+import { Stack, Button, ButtonGroup } from "@mui/material";
 import { IAudioTrack } from "./Interfaces";
 import { useState } from "react";
 import { apiUrl } from "./Properties";
@@ -18,8 +18,12 @@ const AudioButton = function AudioButton({ track, clickCallback }: { track: IAud
     }
 
     return (
-        <Stack direction='row'>
-            <Button sx={{ bgcolor: 'primary.dark', width: '100%' }}
+        <ButtonGroup orientation='horizontal' variant="text" fullWidth>
+            <Button sx={{
+                bgcolor: 'primary.dark',
+                width: '100%'
+            }}
+                fullWidth={false}
                 key={track.id}
                 onClick={() => clickCallback(track.id, false)}
                 onContextMenu={(e) => {
@@ -43,12 +47,13 @@ const AudioButton = function AudioButton({ track, clickCallback }: { track: IAud
                 fontSize: '1.5rem',
                 fontWeight: 100
             }}
+                fullWidth={false}
                 onMouseEnter={e => { setShowFavouriteButton(true); }}
                 onMouseLeave={e => { setShowFavouriteButton(false); }}
                 onClick={e => { toggleFavorite(); }}>
                 {isFavorite ? '★' : '☆'}
             </Button>
-        </Stack>
+        </ButtonGroup>
     );
 }
 

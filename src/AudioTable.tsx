@@ -1,8 +1,14 @@
 import { Masonry } from '@mui/lab';
-import { useState, useEffect, memo } from 'react';
+import { useState, useEffect, memo, useLayoutEffect } from 'react';
 import { IAudioTrack } from './Interfaces';
 import { apiUrl, loginPath } from './Properties';
 import TagColumn from './TagColumn';
+import Grid from '@mui/material/Unstable_Grid2/Grid2';
+import { Accordion, AccordionDetails, AccordionSummary, Button, ButtonGroup, Stack, Typography } from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import StarIcon from '@mui/icons-material/Star';
+import HistoryIcon from '@mui/icons-material/History';
+import AudioButton from './AudioButton';
 
 const splitArrayIntoChunks = (array: any[], n: number) => {
     const chunkSize = Math.ceil(array.length / n);
@@ -34,7 +40,7 @@ const filterTrackData = (trackData: { [tagName: string]: IAudioTrack[] }, query:
     return filteredTrackData;
 }
 
-const AudioTable = memo(function AudioTable({clickCallback, query}: {clickCallback: (trackId: string, isRightClick: boolean) => Promise<void>; query: string}) {
+const AudioTable = memo(function AudioTable({ clickCallback, query }: { clickCallback: (trackId: string, isRightClick: boolean) => Promise<void>; query: string }) {
     const [trackData, setTrackData] = useState<{ [tagName: string]: IAudioTrack[] }>({});
     const [untaggedTrackData, setUntaggedTrackData] = useState<IAudioTrack[]>([]);
     const [loadComplete, setLoadComplete] = useState(false);
@@ -63,7 +69,7 @@ const AudioTable = memo(function AudioTable({clickCallback, query}: {clickCallba
                 else {
                     nongrouped.push(track);
                 }
-                
+
             });
             Object.keys(grouped).forEach((key) => { grouped[key].sort((a, b) => { return a.name.localeCompare(b.name) }) })
             setTrackData(grouped);
@@ -75,21 +81,65 @@ const AudioTable = memo(function AudioTable({clickCallback, query}: {clickCallba
 
     const filteredUntagged = filterTrackList(untaggedTrackData, query);
     const filteredTagged = filterTrackData(trackData, query);
+
+    const favoritesUntagged = filteredUntagged.filter(a => a.isFavorite);
+    const recentsUntagged = [];
+    console.log(favoritesUntagged.length);
     return (
-        <Masonry sx={{ opacity: loadComplete ? 1 : 0, transition: 'ease-in-out .2s' }} columns={{ xs: 3, sm: 5 }} spacing={2.5}>
-            {
-                splitArrayIntoChunks(filteredUntagged, 5).map((chunk: IAudioTrack[], i: number) => {
-                    return (
-                        <TagColumn key={'!no_tag' + i} tagName='' tracks={chunk} clickCallback={clickCallback} />
-                    )
-                }).concat(
-                Object.keys(filteredTagged).sort().map((tagName) => {
-                    return (
-                        <TagColumn key={tagName} tagName={tagName} tracks={filteredTagged[tagName]} clickCallback={clickCallback}/>
-                    );
-                }))
-            }
-        </Masonry>
+        <Grid container spacing={2} columns={{ xs: 1, sm: 2 }}>
+            <Grid xs={1}>
+                <Accordion defaultExpanded>
+                    <AccordionSummary id='favorites-header' aria-controls='favorites-content' expandIcon={<ExpandMoreIcon sx={{ color: 'text.primary' }} />}>
+                        <StarIcon sx={{ mr: 0.5, color: 'gold' }} /><Typography sx={{ lineHeight: '145%' }}>Favorites</Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                        {
+                            favoritesUntagged.length == 0 ? <Typography color={'text.secondary'}>No favorites yet!</Typography> :
+                                <Grid container columns={{ xs: 1, sm: 2, lg: 5 }} spacing={1}>
+                                    {
+                                        favoritesUntagged.map(t => {
+                                            return (
+                                                <Grid xs={1} key={'fav-container_' + t.id}>
+                                                    <AudioButton clickCallback={clickCallback} track={t} key={'fav_' + t.id} />
+                                                </Grid>
+                                            )
+                                        })
+                                    }
+                                </Grid>
+                        }
+                    </AccordionDetails>
+                </Accordion>
+            </Grid>
+            <Grid xs={1} >
+                <Accordion defaultExpanded>
+                    <AccordionSummary id='favorites-header' aria-controls='favorites-content' expandIcon={<ExpandMoreIcon sx={{ color: 'text.primary' }} />}>
+                        <HistoryIcon sx={{ mr: 0.5 }} /><Typography sx={{ lineHeight: '145%' }}>Recent Tracks</Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                        {
+                            recentsUntagged.length == 0 ? <Typography color={'text.secondary'}>Recently played sounds will be shown here.</Typography> :
+                                <Typography>Lorem ipsum</Typography>
+                        }
+                    </AccordionDetails>
+                </Accordion>
+            </Grid>
+            <Grid xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
+                <Masonry sx={{ opacity: loadComplete ? 1 : 0, transition: 'ease-in-out .2s' }} columns={{ xs: 3, sm: 5 }} spacing={{ xs: 1.5, sm: 2.5 }}>
+                    {
+                        splitArrayIntoChunks(filteredUntagged, 5).map((chunk: IAudioTrack[], i: number) => {
+                            return (
+                                <TagColumn key={'!no_tag' + i} tagName='' tracks={chunk} clickCallback={clickCallback} />
+                            )
+                        }).concat(
+                            Object.keys(filteredTagged).sort().map((tagName) => {
+                                return (
+                                    <TagColumn key={tagName} tagName={tagName} tracks={filteredTagged[tagName]} clickCallback={clickCallback} />
+                                );
+                            }))
+                    }
+                </Masonry>
+            </Grid>
+        </Grid>
     );
 })
 
