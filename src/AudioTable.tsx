@@ -41,8 +41,8 @@ const filterTrackData = (trackData: { [tagName: string]: IAudioTrack[] }, query:
 }
 
 const AudioTable = memo(function AudioTable({ clickCallback, query }: { clickCallback: (trackId: string, isRightClick: boolean) => Promise<void>; query: string }) {
-    const [trackData, setTrackData] = useState<{ [tagName: string]: IAudioTrack[] }>({});
-    const [untaggedTrackData, setUntaggedTrackData] = useState<IAudioTrack[]>([]);
+    const [tracksByTag, setTracksByTag] = useState<{ [tagName: string]: IAudioTrack[] }>({});
+    const [untaggedTracks, setUntaggedTracks] = useState<IAudioTrack[]>([]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -51,34 +51,34 @@ const AudioTable = memo(function AudioTable({ clickCallback, query }: { clickCal
                 window.location.href = (apiUrl + loginPath);
                 return;
             }
-            const jsonData: IAudioTrack[] = await response.json();
-            const grouped: { [tagName: string]: IAudioTrack[] } = {};
-            const nongrouped: IAudioTrack[] = [];
-            jsonData.forEach((track) => {
+            const allTracks: IAudioTrack[] = await response.json();
+            const tracksGroupedByTag: { [tagName: string]: IAudioTrack[] } = {};
+            const tracksWithoutTag: IAudioTrack[] = [];
+            allTracks.forEach((track) => {
                 let key;
                 if (track.tags && track.tags[0]) {
                     key = track.tags[0];
-                    if (grouped[key]) {
-                        grouped[key].push(track);
+                    if (tracksGroupedByTag[key]) {
+                        tracksGroupedByTag[key].push(track);
                     }
                     else {
-                        grouped[key] = [track];
+                        tracksGroupedByTag[key] = [track];
                     }
                 }
                 else {
-                    nongrouped.push(track);
+                    tracksWithoutTag.push(track);
                 }
 
             });
-            Object.keys(grouped).forEach((key) => { grouped[key].sort((a, b) => { return a.name.localeCompare(b.name) }) })
-            setTrackData(grouped);
-            setUntaggedTrackData(nongrouped.sort((a, b) => { return a.name.localeCompare(b.name) }));
+            Object.keys(tracksGroupedByTag).forEach((key) => { tracksGroupedByTag[key].sort((a, b) => { return a.name.localeCompare(b.name) }) })
+            setTracksByTag(tracksGroupedByTag);
+            setUntaggedTracks(tracksWithoutTag.sort((a, b) => { return a.name.localeCompare(b.name) }));
         }
         fetchData();
     }, []);
 
-    const filteredUntagged = filterTrackList(untaggedTrackData, query);
-    const filteredTagged = filterTrackData(trackData, query);
+    const filteredUntagged = filterTrackList(untaggedTracks, query);
+    const filteredTagged = filterTrackData(tracksByTag, query);
 
     const favoritesUntagged = filteredUntagged.filter(a => a.isFavorite);
     const recentsUntagged = [];
