@@ -23,7 +23,7 @@ const filterTrackList = (trackList: IAudioTrack[], query: string) => {
     if (!query) {
         return trackList;
     }
-    return trackList.filter(t => t.name.includes(query.toLowerCase()) || t.aliases.some(t => t.includes(query.toLowerCase())));
+    return trackList.filter(t => t.name.toLowerCase().includes(query.toLowerCase()) || t.aliases.some(t => t.toLowerCase().includes(query.toLowerCase())));
 }
 
 const filterTrackData = (trackData: { [tagName: string]: IAudioTrack[] }, query: string) => {
@@ -43,7 +43,6 @@ const filterTrackData = (trackData: { [tagName: string]: IAudioTrack[] }, query:
 const AudioTable = memo(function AudioTable({ clickCallback, query }: { clickCallback: (trackId: string, isRightClick: boolean) => Promise<void>; query: string }) {
     const [trackData, setTrackData] = useState<{ [tagName: string]: IAudioTrack[] }>({});
     const [untaggedTrackData, setUntaggedTrackData] = useState<IAudioTrack[]>([]);
-    const [loadComplete, setLoadComplete] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -74,7 +73,6 @@ const AudioTable = memo(function AudioTable({ clickCallback, query }: { clickCal
             Object.keys(grouped).forEach((key) => { grouped[key].sort((a, b) => { return a.name.localeCompare(b.name) }) })
             setTrackData(grouped);
             setUntaggedTrackData(nongrouped.sort((a, b) => { return a.name.localeCompare(b.name) }));
-            setLoadComplete(true); // This somehow prevents React from rendering a half-done (only 1 column visible) Masonry view.
         }
         fetchData();
     }, []);
