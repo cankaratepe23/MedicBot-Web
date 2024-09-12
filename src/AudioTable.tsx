@@ -43,6 +43,7 @@ const filterTrackData = (trackData: { [tagName: string]: IAudioTrack[] }, query:
 const AudioTable = memo(function AudioTable({ clickCallback, query }: { clickCallback: (trackId: string, isRightClick: boolean) => Promise<void>; query: string }) {
     const [tracksByTag, setTracksByTag] = useState<{ [tagName: string]: IAudioTrack[] }>({});
     const [untaggedTracks, setUntaggedTracks] = useState<IAudioTrack[]>([]);
+    const [favoriteTracks, setFavoriteTracks] = useState<IAudioTrack[]>([]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -73,6 +74,7 @@ const AudioTable = memo(function AudioTable({ clickCallback, query }: { clickCal
             Object.keys(tracksGroupedByTag).forEach((key) => { tracksGroupedByTag[key].sort((a, b) => { return a.name.localeCompare(b.name) }) })
             setTracksByTag(tracksGroupedByTag);
             setUntaggedTracks(tracksWithoutTag.sort((a, b) => { return a.name.localeCompare(b.name) }));
+            setFavoriteTracks(allTracks.filter(t => t.isFavorite));
         }
         fetchData();
     }, []);
@@ -80,7 +82,7 @@ const AudioTable = memo(function AudioTable({ clickCallback, query }: { clickCal
     const filteredUntagged = filterTrackList(untaggedTracks, query);
     const filteredTagged = filterTrackData(tracksByTag, query);
 
-    const favoritesUntagged = filteredUntagged.filter(a => a.isFavorite);
+    const filteredFavorites = filterTrackList(favoriteTracks, query);
     const recentsUntagged = [];
 
     const theme = useTheme();
@@ -93,10 +95,10 @@ const AudioTable = memo(function AudioTable({ clickCallback, query }: { clickCal
                     </AccordionSummary>
                     <AccordionDetails>
                         {
-                            favoritesUntagged.length == 0 ? <Typography color={'text.secondary'}>No favorites yet!</Typography> :
+                            filteredFavorites.length == 0 ? <Typography color={'text.secondary'}>No favorites yet!</Typography> :
                                 <Masonry columns={{ [theme.breakpoints.values.sm]: 1, [theme.breakpoints.values.lg]: 2, default: 5 }} spacing={{default: 8}}>
                                     {
-                                        favoritesUntagged.map(t => {
+                                        filteredFavorites.map(t => {
                                             return (
                                                 <AudioButton clickCallback={clickCallback} track={t} key={'fav_' + t.id} />
                                             )
