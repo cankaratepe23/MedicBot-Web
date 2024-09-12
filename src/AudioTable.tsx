@@ -1,10 +1,10 @@
-import { Masonry } from '@mui/lab';
+import { Masonry } from './CustomMasonry';
 import { useState, useEffect, memo, useLayoutEffect } from 'react';
 import { IAudioTrack } from './Interfaces';
 import { apiUrl, loginPath } from './Properties';
 import TagColumn from './TagColumn';
-import Grid from '@mui/material/Unstable_Grid2/Grid2';
-import { Accordion, AccordionDetails, AccordionSummary, Button, ButtonGroup, Stack, Typography } from '@mui/material';
+import Grid from '@mui/material/Grid2/Grid2';
+import { Accordion, AccordionDetails, AccordionSummary, Button, ButtonGroup, Stack, Typography, useTheme } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import StarIcon from '@mui/icons-material/Star';
 import HistoryIcon from '@mui/icons-material/History';
@@ -84,9 +84,11 @@ const AudioTable = memo(function AudioTable({ clickCallback, query }: { clickCal
 
     const favoritesUntagged = filteredUntagged.filter(a => a.isFavorite);
     const recentsUntagged = [];
+
+    const theme = useTheme();
     return (
         <Grid container spacing={2} columns={{ xs: 1, sm: 2 }}>
-            <Grid xs={1}>
+            <Grid size={1} >
                 <Accordion defaultExpanded>
                     <AccordionSummary id='favorites-header' aria-controls='favorites-content' expandIcon={<ExpandMoreIcon sx={{ color: 'text.primary' }} />}>
                         <StarIcon sx={{ mr: 0.5, color: 'gold' }} /><Typography sx={{ lineHeight: '145%' }}>Favorites</Typography>
@@ -94,7 +96,7 @@ const AudioTable = memo(function AudioTable({ clickCallback, query }: { clickCal
                     <AccordionDetails>
                         {
                             favoritesUntagged.length == 0 ? <Typography color={'text.secondary'}>No favorites yet!</Typography> :
-                                <Masonry columns={{ xs: 1, sm: 2, lg: 5 }} spacing={1}>
+                                <Masonry columns={{ [theme.breakpoints.values.sm]: 1, [theme.breakpoints.values.lg]: 2, default: 5 }} spacing={{default: 8}}>
                                     {
                                         favoritesUntagged.map(t => {
                                             return (
@@ -107,7 +109,7 @@ const AudioTable = memo(function AudioTable({ clickCallback, query }: { clickCal
                     </AccordionDetails>
                 </Accordion>
             </Grid>
-            <Grid xs={1} >
+            <Grid size={1} >
                 <Accordion defaultExpanded>
                     <AccordionSummary id='favorites-header' aria-controls='favorites-content' expandIcon={<ExpandMoreIcon sx={{ color: 'text.primary' }} />}>
                         <HistoryIcon sx={{ mr: 0.5 }} /><Typography sx={{ lineHeight: '145%' }}>Recent Tracks</Typography>
@@ -120,8 +122,8 @@ const AudioTable = memo(function AudioTable({ clickCallback, query }: { clickCal
                     </AccordionDetails>
                 </Accordion>
             </Grid>
-            <Grid xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
-                <Masonry sx={{ opacity: loadComplete ? 1 : 0, transition: 'ease-in-out .2s' }} columns={{ xs: 3, sm: 5 }} spacing={{ xs: 1.5, sm: 2.5 }}>
+            <Grid size={12}>
+                <Masonry columns={{ [theme.breakpoints.values.sm]: 3,  default: 5 }} spacing={{ 600: 20, default: 12}} >
                     {
                         splitArrayIntoChunks(filteredUntagged, 5).map((chunk: IAudioTrack[], i: number) => {
                             return (

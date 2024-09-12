@@ -1,5 +1,5 @@
 import { Box, createTheme, CssBaseline, Stack, TextField, ThemeProvider, ToggleButton, Typography, debounce, Select, MenuItem, Menu, SelectChangeEvent } from '@mui/material';
-import Grid from '@mui/material/Unstable_Grid2';
+import Grid from '@mui/material/Grid2';
 import { grey } from '@mui/material/colors';
 import AudioTable from './AudioTable';
 import { useCallback, useMemo, useRef, useState } from 'react';
@@ -138,15 +138,15 @@ function App() {
       }}>
         <Stack justifyContent='center' spacing={2} p={2}>
           <Grid container spacing={{ xs: 1, md: 3 }}>
-            <Grid xs={12} md={2.5} key='headergrid1'>
+            <Grid size={{ xs: 12, md: 2.5 }} key='headergrid1'>
               <Typography variant='h1' align='left'>MedicBot Entries</Typography>
             </Grid>
-            <Grid xs={12} md={7} key='headergrid2' pr={4}>
+            <Grid size={{ xs: 12, md: 7}} key='headergrid2' pr={4}>
               <TextField id='search-box' label='Search for an audio track...' variant='outlined' fullWidth onChange={e => {
                 handleSearchInputChaned(e.target.value)
               }} />
             </Grid>
-            <Grid xs={12} md={1} key='headergridcombobox'>
+            <Grid size={{ xs:12, md: 1 }} key='headergridcombobox'>
               <Select
                 value={guildIdVisual}
                 label='Guild'
@@ -158,7 +158,7 @@ function App() {
                 <MenuItem value={'843472529938841630'}>Apex</MenuItem>
               </Select>
             </Grid>
-            <Grid xs={12} md={1} key='headergrid3'>
+            <Grid size={{ xs:12, md: 1}} key='headergrid3'>
               <ToggleButton
                 value="check"
                 selected={soundboardModeVisual}
