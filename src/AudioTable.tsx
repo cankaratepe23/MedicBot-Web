@@ -26,7 +26,7 @@ const filterTrackList = (trackList: IAudioTrack[], query: string) => {
     return trackList.filter(t => t.name.toLowerCase().includes(query.toLowerCase()) || t.aliases.some(t => t.toLowerCase().includes(query.toLowerCase())));
 }
 
-const filterTrackData = (trackData: { [tagName: string]: IAudioTrack[] }, query: string) => {
+const filterGroupedTracks = (trackData: { [tagName: string]: IAudioTrack[] }, query: string) => {
     if (!query) {
         return trackData;
     }
@@ -74,17 +74,17 @@ const AudioTable = memo(function AudioTable({ clickCallback, query }: { clickCal
 
             });
             setTracksByTag(tracksGroupedByTag);
-            setUntaggedTracks(tracksWithoutTag);
+            setUntaggedTracks(tracksWithoutTag); // TODO Seems unnecessary to keep this in two variables
             setFavoriteTracks(allTracks.filter(t => t.isFavorite));
         }
         fetchData();
     }, []);
 
     const filteredUntagged = filterTrackList(untaggedTracks, query);
-    const filteredTagged = filterTrackData(tracksByTag, query);
+    const filteredTagged = filterGroupedTracks(tracksByTag, query);
 
     const filteredFavorites = filterTrackList(favoriteTracks, query);
-    const recentsUntagged = [];
+    const recentTracks = [];
 
     const theme = useTheme();
     return (
@@ -117,7 +117,7 @@ const AudioTable = memo(function AudioTable({ clickCallback, query }: { clickCal
                     </AccordionSummary>
                     <AccordionDetails>
                         {
-                            recentsUntagged.length == 0 ? <Typography color={'text.secondary'}>Recently played sounds will be shown here.</Typography> :
+                            recentTracks.length == 0 ? <Typography color={'text.secondary'}>Recently played sounds will be shown here.</Typography> :
                                 <Typography>Lorem ipsum</Typography>
                         }
                     </AccordionDetails>
