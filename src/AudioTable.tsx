@@ -26,24 +26,8 @@ const filterTrackList = (trackList: IAudioTrack[], query: string) => {
     return trackList.filter(t => t.name.toLowerCase().includes(query.toLowerCase()) || t.aliases.some(t => t.toLowerCase().includes(query.toLowerCase())));
 }
 
-const filterGroupedTracks = (trackData: { [tagName: string]: IAudioTrack[] }, query: string) => {
-    if (!query) {
-        return trackData;
-    }
-    const filteredTrackData: { [tagName: string]: IAudioTrack[] } = {};
-    Object.keys(trackData).forEach((tagName) => {
-        const filteredTagGroup = filterTrackList(trackData[tagName], query);
-        if (filteredTagGroup.length != 0) {
-            filteredTrackData[tagName] = filteredTagGroup;
-        }
-    });
-    return filteredTrackData;
-}
-
 const AudioTable = memo(function AudioTable({ clickCallback, query }: { clickCallback: (trackId: string, isRightClick: boolean) => Promise<void>; query: string }) {
-    const [tracksByTag, setTracksByTag] = useState<{ [tagName: string]: IAudioTrack[] }>({});
-    const [untaggedTracks, setUntaggedTracks] = useState<IAudioTrack[]>([]);
-    const [favoriteTracks, setFavoriteTracks] = useState<IAudioTrack[]>([]);
+    const [tracks, setTracks] = useState<IAudioTrack[]>([]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -55,36 +39,34 @@ const AudioTable = memo(function AudioTable({ clickCallback, query }: { clickCal
             const allTracks: IAudioTrack[] = await response.json();
             // This only takes 2ms on my desktop...
             allTracks.sort((a, b) => { return a.name.localeCompare(b.name) });
-            const tracksGroupedByTag: { [tagName: string]: IAudioTrack[] } = {};
-            const tracksWithoutTag: IAudioTrack[] = [];
-            allTracks.forEach((track) => {
-                let key;
-                if (track.tags && track.tags[0]) {
-                    key = track.tags[0];
-                    if (tracksGroupedByTag[key]) {
-                        tracksGroupedByTag[key].push(track);
-                    }
-                    else {
-                        tracksGroupedByTag[key] = [track];
-                    }
-                }
-                else {
-                    tracksWithoutTag.push(track);
-                }
-
-            });
-            setTracksByTag(tracksGroupedByTag);
-            setUntaggedTracks(tracksWithoutTag); // TODO Seems unnecessary to keep this in two variables
-            setFavoriteTracks(allTracks.filter(t => t.isFavorite));
+            setTracks(allTracks);
         }
         fetchData();
     }, []);
 
-    const filteredUntagged = filterTrackList(untaggedTracks, query);
-    const filteredTagged = filterGroupedTracks(tracksByTag, query);
-
-    const filteredFavorites = filterTrackList(favoriteTracks, query);
+    const filteredTracks = filterTrackList(tracks, query);
+    const filteredFavorites = filterTrackList(tracks.filter(t => t.isFavorite), query);
     const recentTracks = [];
+
+    const tracksGroupedByTag: { [tagName: string]: IAudioTrack[] } = {};
+    const tracksWithoutTag: IAudioTrack[] = [];
+    filteredTracks.forEach((track) => {
+        let key;
+        if (track.tags && track.tags[0]) {
+            key = track.tags[0];
+            if (tracksGroupedByTag[key]) {
+                tracksGroupedByTag[key].push(track);
+            }
+            else {
+                tracksGroupedByTag[key] = [track];
+            }
+        }
+        else {
+            tracksWithoutTag.push(track);
+        }
+
+    });
+
 
     const theme = useTheme();
     return (
@@ -126,14 +108,14 @@ const AudioTable = memo(function AudioTable({ clickCallback, query }: { clickCal
             <Grid size={12}>
                 <Masonry columns={{ [theme.breakpoints.values.sm]: 3,  default: 5 }} spacing={{ 600: 20, default: 12}} >
                     {
-                        splitArrayIntoChunks(filteredUntagged, 5).map((chunk: IAudioTrack[], i: number) => {
+                        splitArrayIntoChunks(tracksWithoutTag, 5).map((chunk: IAudioTrack[], i: number) => {
                             return (
                                 <TagColumn key={'!no_tag' + i} tagName='' tracks={chunk} clickCallback={clickCallback} />
                             )
                         }).concat(
-                            Object.keys(filteredTagged).sort().map((tagName) => {
+                            Object.keys(tracksGroupedByTag).sort().map((tagName) => {
                                 return (
-                                    <TagColumn key={tagName} tagName={tagName} tracks={filteredTagged[tagName]} clickCallback={clickCallback} />
+                                    <TagColumn key={tagName} tagName={tagName} tracks={tracksGroupedByTag[tagName]} clickCallback={clickCallback} />
                                 );
                             }))
                     }
