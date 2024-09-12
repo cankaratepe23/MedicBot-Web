@@ -94,17 +94,15 @@ const AudioTable = memo(function AudioTable({ clickCallback, query }: { clickCal
                     <AccordionDetails>
                         {
                             favoritesUntagged.length == 0 ? <Typography color={'text.secondary'}>No favorites yet!</Typography> :
-                                <Grid container columns={{ xs: 1, sm: 2, lg: 5 }} spacing={1}>
+                                <Masonry columns={{ xs: 1, sm: 2, lg: 5 }} spacing={1}>
                                     {
                                         favoritesUntagged.map(t => {
                                             return (
-                                                <Grid xs={1} key={'fav-container_' + t.id}>
-                                                    <AudioButton clickCallback={clickCallback} track={t} key={'fav_' + t.id} />
-                                                </Grid>
+                                                <AudioButton clickCallback={clickCallback} track={t} key={'fav_' + t.id} />
                                             )
                                         })
                                     }
-                                </Grid>
+                                </Masonry>
                         }
                     </AccordionDetails>
                 </Accordion>
