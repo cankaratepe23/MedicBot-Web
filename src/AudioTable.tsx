@@ -53,6 +53,8 @@ const AudioTable = memo(function AudioTable({ clickCallback, query }: { clickCal
                 return;
             }
             const allTracks: IAudioTrack[] = await response.json();
+            // This only takes 2ms on my desktop...
+            allTracks.sort((a, b) => { return a.name.localeCompare(b.name) });
             const tracksGroupedByTag: { [tagName: string]: IAudioTrack[] } = {};
             const tracksWithoutTag: IAudioTrack[] = [];
             allTracks.forEach((track) => {
@@ -71,9 +73,8 @@ const AudioTable = memo(function AudioTable({ clickCallback, query }: { clickCal
                 }
 
             });
-            Object.keys(tracksGroupedByTag).forEach((key) => { tracksGroupedByTag[key].sort((a, b) => { return a.name.localeCompare(b.name) }) })
             setTracksByTag(tracksGroupedByTag);
-            setUntaggedTracks(tracksWithoutTag.sort((a, b) => { return a.name.localeCompare(b.name) }));
+            setUntaggedTracks(tracksWithoutTag);
             setFavoriteTracks(allTracks.filter(t => t.isFavorite));
         }
         fetchData();
