@@ -94,7 +94,7 @@ function ptn(val: string) {
 }
 
 export const Masonry = forwardRef<HTMLElement, MasonryInnerProps>(function Masonry(
-  { children, className, as = 'div', columns = 1, spacing = 0, defaultHeight = 0, disableSSR = false, ...rest },
+  { children, className, as = 'div', columns = 1, spacing = 0, defaultHeight = 0, disableSSR = true, ...rest },
   ref
 ) {
   const masonryRef = useRef<HTMLElement>(null!);
