@@ -124,7 +124,7 @@ function App() {
     () =>
       debounce((value: string) => {
         setSerachQuery(value)
-      }, 250),
+      }, 100),
     []
   );
 
