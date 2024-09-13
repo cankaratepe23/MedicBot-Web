@@ -1,22 +1,11 @@
 import { Stack, Button, ButtonGroup } from "@mui/material";
 import { IAudioTrack } from "./Interfaces";
-import { useState } from "react";
+import { memo, useState } from "react";
 import { apiUrl } from "./Properties";
 
-const AudioButton = function AudioButton({ track, clickCallback }: { track: IAudioTrack, clickCallback: (trackId: string, isRightClick: boolean) => Promise<void> }) {
+const AudioButton = memo(function AudioButton({ track, clickCallback, favoriteCallback }: { track: IAudioTrack, clickCallback: (trackId: string, isRightClick: boolean) => Promise<void>, favoriteCallback: (track: IAudioTrack) => Promise<void> }) {
 
     const [favoriteButtonHover, setFavoriteButtonHover] = useState(false);
-    const [isFavorite, setIsFavorite] = useState(track.isFavorite);
-
-    function toggleFavorite() {
-        const httpMethod = isFavorite ? "delete" : "post";
-        fetch(apiUrl + 'User/@me/Favorites/' + track.id, { credentials: 'include', method: httpMethod }).then(response => {
-            if (response.ok) {
-                setIsFavorite(!isFavorite);
-            }
-        });
-    }
-
     return (
         <ButtonGroup orientation='horizontal' variant="text" fullWidth>
             <Button sx={{
@@ -37,7 +26,7 @@ const AudioButton = function AudioButton({ track, clickCallback }: { track: IAud
                     }, 1000)
                 }}>{track.name}</Button>
             <Button sx={{
-                color: isFavorite ? 'gold' : favoriteButtonHover ? '#EEE' : '#666',
+                color: track.isFavorite ? 'gold' : favoriteButtonHover ? '#EEE' : '#666',
                 bgcolor: 'primary.dark',
                 "&:hover": { bgcolor: 'primary.dark' },
                 transition: 'ease-in-out .2s',
@@ -50,11 +39,11 @@ const AudioButton = function AudioButton({ track, clickCallback }: { track: IAud
                 fullWidth={false}
                 onMouseEnter={e => { setFavoriteButtonHover(true); }}
                 onMouseLeave={e => { setFavoriteButtonHover(false); }}
-                onClick={e => { toggleFavorite(); }}>
-                {favoriteButtonHover ? '☆' : isFavorite ? '★' : '☆'}
+                onClick={e => { favoriteCallback(track); }}>
+                {favoriteButtonHover ? '☆' : track.isFavorite ? '★' : '☆'}
             </Button>
         </ButtonGroup>
     );
-}
+});
 
 export default AudioButton;

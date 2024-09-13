@@ -14,7 +14,6 @@ const AudioPlayer = function AudioPlayer() {
 
     useEffect(() => {
         const requestUrl = apiUrl.substring(0, apiUrl.length - 1) + window.location.pathname + window.location.search;
-        console.log(requestUrl);
         
         fetch(requestUrl, { credentials: 'include', method: 'head' }).then(async response => {
             if (response.status == 401) {

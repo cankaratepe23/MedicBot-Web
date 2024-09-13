@@ -1,5 +1,5 @@
 import { Masonry } from './CustomMasonry';
-import { useState, useEffect, memo, useLayoutEffect } from 'react';
+import { useState, useEffect, memo, useLayoutEffect, useCallback } from 'react';
 import { IAudioTrack } from './Interfaces';
 import { apiUrl, loginPath } from './Properties';
 import TagColumn from './TagColumn';
@@ -28,6 +28,15 @@ const filterTrackList = (trackList: IAudioTrack[], query: string) => {
 
 const AudioTable = memo(function AudioTable({ clickCallback, query }: { clickCallback: (trackId: string, isRightClick: boolean) => Promise<void>; query: string }) {
     const [tracks, setTracks] = useState<IAudioTrack[]>([]);
+
+    const toggleFavorite = useCallback(async (track: IAudioTrack) => {
+        const httpMethod = track.isFavorite ? "delete" : "post";
+        fetch(apiUrl + 'User/@me/Favorites/' + track.id, { credentials: 'include', method: httpMethod }).then(response => {
+            if (response.ok) {
+                setTracks(prevTracks => prevTracks.map(t => t.id === track.id ? {...track, isFavorite: !track.isFavorite} : t));
+            }
+        });
+    }, []);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -83,7 +92,7 @@ const AudioTable = memo(function AudioTable({ clickCallback, query }: { clickCal
                                     {
                                         filteredFavorites.map(t => {
                                             return (
-                                                <AudioButton clickCallback={clickCallback} track={t} key={'fav_' + t.id} />
+                                                <AudioButton clickCallback={clickCallback} favoriteCallback={toggleFavorite} track={t} key={t.id} />
                                             )
                                         })
                                     }
@@ -110,12 +119,12 @@ const AudioTable = memo(function AudioTable({ clickCallback, query }: { clickCal
                     {
                         splitArrayIntoChunks(tracksWithoutTag, 5).map((chunk: IAudioTrack[], i: number) => {
                             return (
-                                <TagColumn key={'!no_tag' + i} tagName='' tracks={chunk} clickCallback={clickCallback} />
+                                <TagColumn key={'!no_tag' + i} tagName='' tracks={chunk} clickCallback={clickCallback} favoriteCallback={toggleFavorite} />
                             )
                         }).concat(
                             Object.keys(tracksGroupedByTag).sort().map((tagName) => {
                                 return (
-                                    <TagColumn key={tagName} tagName={tagName} tracks={tracksGroupedByTag[tagName]} clickCallback={clickCallback} />
+                                    <TagColumn key={tagName} tagName={tagName} tracks={tracksGroupedByTag[tagName]} clickCallback={clickCallback} favoriteCallback={toggleFavorite} />
                                 );
                             }))
                     }

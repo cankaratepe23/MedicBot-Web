@@ -4,7 +4,7 @@ import { memo } from 'react';
 import AudioButton from './AudioButton';
 import { BorderBottom } from '@mui/icons-material';
 
-const TagColumn = memo(function TagColumn({ tagName, tracks, clickCallback }: { tagName: string, tracks: IAudioTrack[], clickCallback: (trackId: string, isRightClick: boolean) => Promise<void> }) {
+const TagColumn = memo(function TagColumn({ tagName, tracks, clickCallback, favoriteCallback }: { tagName: string, tracks: IAudioTrack[], clickCallback: (trackId: string, isRightClick: boolean) => Promise<void>, favoriteCallback: (track: IAudioTrack) => Promise<void> }) {
     return (
         <Stack width={250}>
             {
@@ -17,7 +17,7 @@ const TagColumn = memo(function TagColumn({ tagName, tracks, clickCallback }: { 
             <ButtonGroup orientation='vertical' variant='text' >
                 {tracks.map(track => {
                     return (
-                        <AudioButton key={track.id} track={track} clickCallback={clickCallback} />
+                        <AudioButton key={track.id} track={track} clickCallback={clickCallback} favoriteCallback={favoriteCallback}/>
                     );
                 })}
             </ButtonGroup>
