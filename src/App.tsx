@@ -1,6 +1,7 @@
-import { Box, createTheme, CssBaseline, Stack, TextField, ThemeProvider, ToggleButton, Typography, debounce, Select, MenuItem, Menu, SelectChangeEvent } from '@mui/material';
+import { Box, createTheme, CssBaseline, Stack, TextField, ThemeProvider, ToggleButton, Typography, debounce, Select, MenuItem, Menu, SelectChangeEvent, IconButton } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import { grey } from '@mui/material/colors';
+import ClearIcon from '@mui/icons-material/Clear';
 import AudioTable from './AudioTable';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { apiUrl, loginPath } from './Properties';
@@ -71,7 +72,8 @@ function App() {
   const guildId = useRef('463052720509812736');
   const [guildIdVisual, setGuildIdVisual] = useState('463052720509812736');
 
-  const [searchQuery, setSerachQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchFieldText, setSearchFieldText] = useState('');
 
   const handleClick = useCallback(async (trackId: string, isRightClick: boolean) => {
     if (isRightClick) {
@@ -123,7 +125,7 @@ function App() {
   const handleSearchInputChaned = useMemo(
     () =>
       debounce((value: string) => {
-        setSerachQuery(value)
+        setSearchQuery(value)
       }, 100),
     []
   );
@@ -142,9 +144,22 @@ function App() {
               <Typography variant='h1' align='left'>MedicBot Entries</Typography>
             </Grid>
             <Grid size={{ xs: 12, md: 7}} key='headergrid2' pr={4}>
-              <TextField id='search-box' label='Search for an audio track...' variant='outlined' fullWidth onChange={e => {
-                handleSearchInputChaned(e.target.value)
-              }} />
+              <TextField
+                id='search-box'
+                label='Search for an audio track...'
+                variant='outlined'
+                fullWidth
+                value={searchFieldText}
+                onChange={e => {
+                  setSearchFieldText(e.target.value);
+                  handleSearchInputChaned(e.target.value);
+                }}
+                slotProps={{
+                  input: {
+                    endAdornment: (<IconButton onClick={e => { setSearchFieldText(''); handleSearchInputChaned(''); }}><ClearIcon /></IconButton>)
+                  }
+                }}
+              />
             </Grid>
             <Grid size={{ xs:12, md: 1 }} key='headergridcombobox'>
               <Select
