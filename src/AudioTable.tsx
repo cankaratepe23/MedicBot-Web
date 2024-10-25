@@ -28,6 +28,7 @@ const filterTrackList = (trackList: IAudioTrack[], query: string) => {
 
 const AudioTable = memo(function AudioTable({ clickCallback, query }: { clickCallback: (trackId: string, isRightClick: boolean) => Promise<void>; query: string }) {
     const [tracks, setTracks] = useState<IAudioTrack[]>([]);
+    const [recents, setRecents] = useState<IAudioTrack[]>([]);
 
     const toggleFavorite = useCallback(async (track: IAudioTrack) => {
         const httpMethod = track.isFavorite ? "delete" : "post";
@@ -50,12 +51,25 @@ const AudioTable = memo(function AudioTable({ clickCallback, query }: { clickCal
             allTracks.sort((a, b) => { return a.name.localeCompare(b.name) });
             setTracks(allTracks);
         }
+        const fetchRecents = async () => {
+            const response = await fetch(apiUrl + 'Audio/Recents', { credentials: 'include' });
+            if (response.status == 401) {
+                window.location.href = (apiUrl + loginPath);
+                return;
+            }
+            const recentTracksWithCounts: Array<{ audioTrackDto: IAudioTrack; count: number }> = await response.json();
+            recentTracksWithCounts.sort(r => r.count);
+            const recentTracks: IAudioTrack[] = recentTracksWithCounts.map(r => r.audioTrackDto);
+            recentTracks.sort((a, b) => { return a.name.localeCompare(b.name) });
+            setRecents(recentTracks);
+        }
         fetchData();
+        fetchRecents();
     }, []);
 
     const filteredTracks = filterTrackList(tracks, query);
     const filteredFavorites = filterTrackList(tracks.filter(t => t.isFavorite), query);
-    const recentTracks = [];
+    const filteredRecents = filterTrackList(recents, query);
 
     const tracksGroupedByTag: { [tagName: string]: IAudioTrack[] } = {};
     const tracksWithoutTag: IAudioTrack[] = [];
@@ -108,9 +122,16 @@ const AudioTable = memo(function AudioTable({ clickCallback, query }: { clickCal
                     </AccordionSummary>
                     <AccordionDetails>
                         {
-                            recentTracks.length == 0 ? <Typography color={'text.secondary'}>Recently played sounds will be shown here.</Typography> :
-                                <Typography>Lorem ipsum</Typography>
-                        }
+                            filteredRecents.length == 0 ? <Typography color={'text.secondary'}>Recently played sounds will be shown here.</Typography> :
+                                <Masonry columns={{ [theme.breakpoints.values.sm]: 1, [theme.breakpoints.values.lg]: 2, default: 5 }} spacing={{ default: 8 }}>
+                                    {
+                                        filteredRecents.map(t => {
+                                            return (
+                                                <AudioButton clickCallback={clickCallback} favoriteCallback={toggleFavorite} track={t} key={t.id} />
+                                            )
+                                        })
+                                    }
+                                </Masonry>}
                     </AccordionDetails>
                 </Accordion>
             </Grid>
