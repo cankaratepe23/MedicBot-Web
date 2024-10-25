@@ -58,7 +58,7 @@ const AudioTable = memo(function AudioTable({ clickCallback, query }: { clickCal
                 return;
             }
             const recentTracksWithCounts: Array<{ audioTrackDto: IAudioTrack; count: number }> = await response.json();
-            recentTracksWithCounts.sort(r => r.count);
+            recentTracksWithCounts.sort((a, b) => (a > b ? -1 : 1));
             const recentTracks: IAudioTrack[] = recentTracksWithCounts.map(r => r.audioTrackDto);
             setRecents(recentTracks);
         }
