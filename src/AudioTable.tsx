@@ -35,6 +35,7 @@ const AudioTable = memo(function AudioTable({ clickCallback, query }: { clickCal
         fetch(apiUrl + 'User/@me/Favorites/' + track.id, { credentials: 'include', method: httpMethod }).then(response => {
             if (response.ok) {
                 setTracks(prevTracks => prevTracks.map(t => t.id === track.id ? {...track, isFavorite: !track.isFavorite} : t));
+                setRecents(prevTracks => prevTracks.map(t => t.id === track.id ? {...track, isFavorite: !track.isFavorite}: t));
             }
         });
     }, []);
