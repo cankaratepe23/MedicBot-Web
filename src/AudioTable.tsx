@@ -1,6 +1,7 @@
 import { Masonry } from './CustomMasonry';
 import { useState, useEffect, memo, useLayoutEffect, useCallback } from 'react';
 import { IAudioTrack } from './Interfaces';
+import * as signalR from "@microsoft/signalr";
 import { apiUrl, loginPath } from './Properties';
 import TagColumn from './TagColumn';
 import Grid from '@mui/material/Grid2/Grid2';
@@ -29,6 +30,7 @@ const filterTrackList = (trackList: IAudioTrack[], query: string) => {
 const AudioTable = memo(function AudioTable({ clickCallback, query }: { clickCallback: (trackId: string, isRightClick: boolean) => Promise<void>; query: string }) {
     const [tracks, setTracks] = useState<IAudioTrack[]>([]);
     const [recents, setRecents] = useState<IAudioTrack[]>([]);
+    const [latestTrackId, setLatestTrackId] = useState<string>();
 
     const toggleFavorite = useCallback(async (track: IAudioTrack) => {
         const httpMethod = track.isFavorite ? "delete" : "post";
@@ -65,7 +67,36 @@ const AudioTable = memo(function AudioTable({ clickCallback, query }: { clickCal
         }
         fetchData();
         fetchRecents();
+
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl(apiUrl + 'PlaybackHub')
+            .withAutomaticReconnect()
+            .build();
+
+        connection.on("ReceiveRecentPlay", (trackId: string) => {
+            setLatestTrackId(trackId);
+        });
+        connection.start().catch((err) => console.log(err));
     }, []);
+
+    useEffect(() => {
+        const trackId = latestTrackId;
+        const foundTrack = tracks.find(t => t.id === trackId);
+        if (!foundTrack) {
+            return;
+        }
+        const newTrack: IAudioTrack = foundTrack; // { ...foundTrack };
+        setRecents((prevState) => {
+            const index = prevState.findIndex(t => t.id === trackId);
+            if (index !== -1) {
+                const newState = [newTrack, ...prevState.slice(0, index), ...prevState.slice(index + 1)];
+                return newState;
+            }
+            else {
+                return [newTrack, ...prevState.slice(0, prevState.length - 1)];
+            }
+        });
+    }, [latestTrackId])
 
     const filteredTracks = filterTrackList(tracks, query);
     const filteredFavorites = filterTrackList(tracks.filter(t => t.isFavorite), query);
