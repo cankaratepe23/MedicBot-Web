@@ -1,22 +1,25 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { styled, keyframes } from '@mui/material/styles';
+import React, { useState, useEffect, useRef } from "react";
+import { styled, keyframes } from "@mui/material/styles";
+import { Stack, Typography } from "@mui/material";
 
 // TypeScript interfaces
 interface FloatingCoinProps {
   x: number;
   y: number;
   onAnimationComplete: () => void;
+  price: number;
 }
 
 interface Coin {
   id: number;
   x: number;
   y: number;
+  price: number;
 }
 
 interface UseFloatingCoinsReturn {
   coins: Coin[];
-  addCoin: (event: React.MouseEvent) => void;
+  addCoin: (event: React.MouseEvent, price: number) => void;
   removeCoin: (coinId: number) => void;
   containerRef: React.RefObject<HTMLDivElement>;
 }
@@ -29,7 +32,7 @@ const floatUp = keyframes`
   }
   100% {
     opacity: 0;
-    transform: translateY(-100px) scale(0.5);
+    transform: translateY(-200px) scale(0.7);
   }
 `;
 
@@ -39,69 +42,80 @@ const spin = keyframes`
 `;
 
 // Create styled components using MUI's styled function
-const CoinContainer = styled('div')<{ x: number; y: number; rotationStart: number; rotationEnd: number; }>(
-  ({ theme, x, y, rotationStart, rotationEnd }) => ({
-    position: 'absolute',
-    left: x,
-    top: y,
-    zIndex: 9999,
-    pointerEvents: 'none',
-    animation: `${floatUp} 1s forwards`,
-    transform: `rotate(${rotationStart}deg)`,
-    '&::after': {
-      content: '""',
-      animation: `${spin} 1s linear infinite`
-    }
-  })
-);
-
-const OuterCoin = styled('div')(({ theme }) => ({
-  width: '32px',
-  height: '32px',
-  backgroundColor: '#FFD700',
-  borderRadius: '50%',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  boxShadow: theme.shadows[2],
-  animation: `${spin} 1s linear infinite`
+const CoinContainer = styled("div")<{
+  x: number;
+  y: number;
+  rotationStart: number;
+  rotationEnd: number;
+}>(({ theme, x, y, rotationStart, rotationEnd }) => ({
+  position: "absolute",
+  left: x,
+  top: y,
+  zIndex: 9999,
+  pointerEvents: "none",
+  animation: `${floatUp} 3s forwards`,
+  transform: `rotate(${rotationStart}deg)`,
+  "&::after": {
+    content: '""',
+    animation: `${spin} 3s linear infinite`,
+  },
 }));
 
-const InnerCoin = styled('div')(({ theme }) => ({
-  width: '24px',
-  height: '24px',
-  backgroundColor: '#FFEB3B',
-  borderRadius: '50%',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  fontWeight: 'bold',
-  color: '#B7950B'
+const OuterCoin = styled("div")(({ theme }) => ({
+  width: "32px",
+  height: "32px",
+  backgroundColor: "#FFD700",
+  borderRadius: "50%",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  boxShadow: theme.shadows[2],
+  animation: `${spin} 3s infinite`,
+}));
+
+const InnerCoin = styled("div")(({ theme }) => ({
+  width: "24px",
+  height: "24px",
+  backgroundColor: "#FFEB3B",
+  borderRadius: "50%",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  fontWeight: "bold",
+  color: "#B7950B",
 }));
 
 // Separate component for floating coins
-const FloatingCoin: React.FC<FloatingCoinProps> = ({ x, y, onAnimationComplete }) => {
+const FloatingCoin: React.FC<FloatingCoinProps> = ({
+  x,
+  y,
+  onAnimationComplete,
+  price
+}) => {
   const rotationStart = useRef(Math.random() * 360);
   const rotationEnd = useRef(rotationStart.current + Math.random() * 360 + 360);
-  
+
   useEffect(() => {
     const timer = setTimeout(() => {
       if (onAnimationComplete) onAnimationComplete();
     }, 1000);
-    
+
     return () => clearTimeout(timer);
   }, [onAnimationComplete]);
-  
+
   return (
-    <CoinContainer 
-      x={x} 
-      y={y} 
-      rotationStart={rotationStart.current} 
+    <CoinContainer
+      x={x}
+      y={y}
+      rotationStart={rotationStart.current}
       rotationEnd={rotationEnd.current}
     >
-      <OuterCoin>
-        <InnerCoin>$</InnerCoin>
-      </OuterCoin>
+      <Stack direction="row" spacing={1} alignItems='center'>
+        {price === -1 ? <></> : <Typography textAlign="center">{price}</Typography>}
+        <OuterCoin>
+          <InnerCoin>$</InnerCoin>
+        </OuterCoin>
+      </Stack>
     </CoinContainer>
   );
 };
@@ -110,27 +124,28 @@ const FloatingCoin: React.FC<FloatingCoinProps> = ({ x, y, onAnimationComplete }
 export const useFloatingCoins = (): UseFloatingCoinsReturn => {
   const [coins, setCoins] = useState<Coin[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
-  
-  const addCoin = (event: React.MouseEvent): void => {
+
+  const addCoin = (event: React.MouseEvent, price: number): void => {
     if (!containerRef.current || !event) return;
-    
+
     const containerRect = containerRef.current.getBoundingClientRect();
     const x = event.clientX - containerRect.left;
     const y = event.clientY - containerRect.top;
-    
+
     const newCoin: Coin = {
       id: Date.now(),
       x,
       y,
+      price,
     };
-    
-    setCoins(prevCoins => [...prevCoins, newCoin]);
+
+    setCoins((prevCoins) => [...prevCoins, newCoin]);
   };
-  
+
   const removeCoin = (coinId: number): void => {
-    setCoins(prevCoins => prevCoins.filter(coin => coin.id !== coinId));
+    setCoins((prevCoins) => prevCoins.filter((coin) => coin.id !== coinId));
   };
-  
+
   return {
     coins,
     addCoin,
@@ -139,37 +154,4 @@ export const useFloatingCoins = (): UseFloatingCoinsReturn => {
   };
 };
 
-// Container component with Material UI styling
-interface FloatingCoinsContainerProps {
-  children: React.ReactNode;
-}
-
-const StyledContainer = styled('div')({
-  position: 'relative',
-  display: 'inline-block'
-});
-
-const FloatingCoinsContainer: React.FC<FloatingCoinsContainerProps> = ({ children }) => {
-  const { coins, addCoin, removeCoin, containerRef } = useFloatingCoins();
-  
-  return (
-    <StyledContainer
-      ref={containerRef} 
-      onClick={addCoin}
-    >
-      {children}
-      
-      {coins.map(coin => (
-        <FloatingCoin
-          key={coin.id}
-          x={coin.x}
-          y={coin.y}
-          onAnimationComplete={() => removeCoin(coin.id)}
-        />
-      ))}
-    </StyledContainer>
-  );
-};
-
 export { FloatingCoin };
-export default FloatingCoinsContainer;

@@ -10,14 +10,21 @@ const AudioButton = memo(function AudioButton({
   favoriteCallback,
 }: {
   track: IAudioTrack;
-  clickCallback: (trackId: string, isRightClick: boolean) => Promise<void>;
+  clickCallback: (trackId: string, isRightClick: boolean) => Promise<number>;
   favoriteCallback: (track: IAudioTrack) => Promise<void>;
 }) {
   const [favoriteButtonHover, setFavoriteButtonHover] = useState(false);
   const { coins, addCoin, removeCoin, containerRef } = useFloatingCoins();
 
   return (
-    <div ref={containerRef} style={{ position: 'relative', display: 'inline-block', overflow: 'visible' }}>
+    <div
+      ref={containerRef}
+      style={{
+        position: "relative",
+        display: "inline-block",
+        overflow: "visible",
+      }}
+    >
       <ButtonGroup orientation="horizontal" variant="text" fullWidth>
         <Button
           sx={{
@@ -27,8 +34,10 @@ const AudioButton = memo(function AudioButton({
           fullWidth={false}
           key={track.id}
           onClick={(e) => {
-            clickCallback(track.id, false);
-            addCoin(e);
+            clickCallback(track.id, false).then((res) => {
+              console.log("clickCallback " + res);
+              addCoin(e, res);
+            });
           }}
           onContextMenu={(e) => {
             e.preventDefault();
@@ -73,14 +82,22 @@ const AudioButton = memo(function AudioButton({
           {favoriteButtonHover ? "☆" : track.isFavorite ? "★" : "☆"}
         </Button>
       </ButtonGroup>
-      {coins.map((coin) => (
-        ReactDOM.createPortal(<FloatingCoin
-          key={coin.id}
-          x={coin.x + (containerRef.current?.getBoundingClientRect().left || 0)}
-          y={coin.y + (containerRef.current?.getBoundingClientRect().top || 0)}
-          onAnimationComplete={() => removeCoin(coin.id)}
-        />, document.body)
-      ))}
+      {coins.map((coin) =>
+        ReactDOM.createPortal(
+          <FloatingCoin
+            key={coin.id}
+            x={
+              coin.x - 30 + (containerRef.current?.getBoundingClientRect().left || 0)
+            }
+            y={
+              coin.y - 20 +(containerRef.current?.getBoundingClientRect().top || 0)
+            }
+            onAnimationComplete={() => removeCoin(coin.id)}
+            price={coin.price}
+          />,
+          document.body
+        )
+      )}
     </div>
   );
 });

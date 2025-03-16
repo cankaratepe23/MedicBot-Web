@@ -77,34 +77,32 @@ function App() {
 
   const handleClick = useCallback(async (trackId: string, isRightClick: boolean) => {
     if (isRightClick) {
+      // Handle right click case
       const url = apiUrl + 'Auth/TemporaryToken';
-
-      fetch(url, { credentials: 'include' }).then(async response => {
+      return fetch(url, { credentials: 'include' }).then(async response => {
         if (response.status == 401) {
           window.location.href = (apiUrl + loginPath);
-        }
-        else {
+          return -1;
+        } else {
           const tempToken = await response.text();
           navigator.clipboard.writeText(window.location.href + 'Audio/' + trackId + '?token=' + tempToken);
+          return -1;
         }
-      })
-
-      return;
+      });
     }
-
-    if (soundboardMode.current) {
+    else if (soundboardMode.current) {
       const url = apiUrl + 'Audio/' + trackId;
-
-      fetch(url, { credentials: 'include' }).then(response => {
+      return fetch(url, { credentials: 'include' }).then(response => {
         if (response.status == 401) {
           window.location.href = (apiUrl + loginPath);
-        }
-        else {
-          response.blob().then(blob => {
+          return -1;
+        } else {
+          return response.blob().then(blob => {
             const blobUrl = window.URL.createObjectURL(blob);
-            const audio = new Audio(blobUrl)
+            const audio = new Audio(blobUrl);
             audio.play();
-          })
+            return -1;
+          });
         }
       });
     }
@@ -113,14 +111,21 @@ function App() {
         audioNameOrId: trackId,
         searchById: "true"
       });
-
-      fetch(url, { credentials: 'include' }).then(response => {
+  
+      return fetch(url, { credentials: 'include' }).then(async response => {
         if (response.status == 401) {
           window.location.href = (apiUrl + loginPath);
+          return -1;
         }
+        else if (response.ok) {
+          const responseText = await response.text();
+          // If responseText is supposed to be a price, parse it as a number
+          return !isNaN(Number(responseText)) ? Number(responseText) : -1;
+        }
+        return -1;
       });
     }
-  }, []);
+  }, []);  
 
   const handleSearchInputChaned = useMemo(
     () =>

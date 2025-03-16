@@ -4,7 +4,7 @@ import { memo } from 'react';
 import AudioButton from './AudioButton';
 import { BorderBottom } from '@mui/icons-material';
 
-const TagColumn = memo(function TagColumn({ tagName, tracks, clickCallback, favoriteCallback }: { tagName: string, tracks: IAudioTrack[], clickCallback: (trackId: string, isRightClick: boolean) => Promise<void>, favoriteCallback: (track: IAudioTrack) => Promise<void> }) {
+const TagColumn = memo(function TagColumn({ tagName, tracks, clickCallback, favoriteCallback }: { tagName: string, tracks: IAudioTrack[], clickCallback: (trackId: string, isRightClick: boolean) => Promise<number>, favoriteCallback: (track: IAudioTrack) => Promise<void> }) {
     return (
         <Stack width={250}>
             {

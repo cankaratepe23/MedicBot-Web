@@ -27,7 +27,7 @@ const filterTrackList = (trackList: IAudioTrack[], query: string) => {
     return trackList.filter(t => t.name.toLowerCase().includes(query.toLowerCase()) || t.aliases.some(t => t.toLowerCase().includes(query.toLowerCase())));
 }
 
-const AudioTable = memo(function AudioTable({ clickCallback, query }: { clickCallback: (trackId: string, isRightClick: boolean) => Promise<void>; query: string }) {
+const AudioTable = memo(function AudioTable({ clickCallback, query }: { clickCallback: (trackId: string, isRightClick: boolean) => Promise<number>; query: string }) {
     const [tracks, setTracks] = useState<IAudioTrack[]>([]);
     const [recents, setRecents] = useState<IAudioTrack[]>([]);
     const [latestTrackId, setLatestTrackId] = useState<string>();
