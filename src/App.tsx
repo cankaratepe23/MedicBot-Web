@@ -1,9 +1,9 @@
-import { Box, createTheme, CssBaseline, Stack, TextField, ThemeProvider, ToggleButton, Typography, debounce, Select, MenuItem, Menu, SelectChangeEvent, IconButton } from '@mui/material';
-import Grid from '@mui/material/Grid2';
+import { Box, createTheme, CssBaseline, Stack, TextField, ThemeProvider, ToggleButton, Typography, debounce, Select, MenuItem, Menu, SelectChangeEvent, IconButton, Icon } from '@mui/material';
 import { grey } from '@mui/material/colors';
 import ClearIcon from '@mui/icons-material/Clear';
+import { Paid } from '@mui/icons-material';
 import AudioTable from './AudioTable';
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { apiUrl, loginPath } from './Properties';
 
 import bgImg from './img/12-Dark.webp';
@@ -75,6 +75,19 @@ function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchFieldText, setSearchFieldText] = useState('');
 
+  const [userBalance, setUserBalance] = useState(0);
+
+  useEffect(() => {
+    fetch(apiUrl + 'User/@me/Balance', { credentials: 'include' }).then(async response => {
+      if (response.ok) {
+        const responseVal = Number(await response.text());
+        if (!isNaN(responseVal)) {
+          setUserBalance(responseVal);
+        }
+      }
+  });
+  }, []);
+
   const handleClick = useCallback(async (trackId: string, isRightClick: boolean) => {
     if (isRightClick) {
       // Handle right click case
@@ -112,7 +125,7 @@ function App() {
         searchById: "true"
       });
   
-      return fetch(url, { credentials: 'include' }).then(async response => {
+      const audioPrice = fetch(url, { credentials: 'include' }).then(async response => {
         if (response.status == 401) {
           window.location.href = (apiUrl + loginPath);
           return -1;
@@ -124,8 +137,13 @@ function App() {
         }
         return -1;
       });
+      const audioPriceValue = await audioPrice;
+      if (audioPriceValue !== -1) {
+        setUserBalance(previous => previous - audioPriceValue);
+      }
+      return audioPrice;
     }
-  }, []);  
+  }, [setUserBalance]);  
 
   const handleSearchInputChaned = useMemo(
     () =>
@@ -144,11 +162,8 @@ function App() {
         minHeight: '500vh'
       }}>
         <Stack justifyContent='center' spacing={2} p={2}>
-          <Grid container spacing={{ xs: 1, md: 3 }}>
-            <Grid size={{ xs: 12, md: 2.5 }} key='headergrid1'>
-              <Typography variant='h1' align='left' noWrap>MedicBot Entries</Typography>
-            </Grid>
-            <Grid size={{ xs: 12, md: 7}} key='headergrid2' pr={4}>
+          <Stack direction={{ xs: 'column', md: 'row'}} spacing={{ xs: 1, md: 3 }} alignItems={{ xs: 'inherit', md: 'center'}}>
+              <Typography variant='h1' align='left' sx={{ minWidth: { xs: '100%', md: 'fit-content' } }}>MedicBot Entries</Typography>
               <TextField
                 id='search-box'
                 label='Search for an audio track...'
@@ -165,8 +180,6 @@ function App() {
                   }
                 }}
               />
-            </Grid>
-            <Grid size={{ xs:12, md: 1 }} key='headergridcombobox'>
               <Select
                 value={guildIdVisual}
                 label='Guild'
@@ -177,10 +190,7 @@ function App() {
                 <MenuItem value={'463052720509812736'}>Çomaristan</MenuItem>
                 <MenuItem value={'843472529938841630'}>Apex</MenuItem>
               </Select>
-            </Grid>
-            <Grid size={{ xs:12, md: 1}} key='headergrid3'>
               <ToggleButton
-                sx={{ height: '100%' }}
                 value="check"
                 selected={soundboardModeVisual}
                 onChange={() => {
@@ -190,8 +200,13 @@ function App() {
                 color='warning'>
                 Soundboard Mode
               </ToggleButton>
-            </Grid>
-          </Grid>
+              <Stack direction='row' alignItems='center' spacing={0.5}>
+                <Typography variant='h2' paddingBottom={0.3}>
+                  {userBalance}
+                </Typography>
+                <Paid sx={{ fontSize: '2rem', color: 'gold' }}/>
+              </Stack>
+          </Stack>
           <AudioTable clickCallback={handleClick} query={searchQuery} />
         </Stack>
       </Box>
